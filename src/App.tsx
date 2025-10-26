@@ -73,13 +73,15 @@ export default function App() {
   return (
     <div className="min-h-screen">
       <Header onAdminClick={handleAdminClick} />
-      <HeroSection />
-      <MenuSection />
-      <FeaturesSection />
-      <TestimonialsSection />
-      <AboutSection />
-      <LocationSection />
-      <Footer />
+      <div className="pt-16 sm:pt-20">
+        <HeroSection />
+        <MenuSection />
+        <FeaturesSection />
+        <TestimonialsSection />
+        <AboutSection />
+        <LocationSection />
+        <Footer />
+      </div>
       
       {/* Modal de login admin */}
       {showAdminLogin && (

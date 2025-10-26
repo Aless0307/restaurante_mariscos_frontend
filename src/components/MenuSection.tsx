@@ -3,6 +3,7 @@ import { Badge } from "./ui/badge";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useState, useEffect } from "react";
 import { restauranteAPI, type CategoriaMenu } from "../services/api";
+import { GRADIENT_CLASSES } from "../styles/gradients";
 
 export function MenuSection() {
   const [menuData, setMenuData] = useState<CategoriaMenu[]>([]);
@@ -52,7 +53,7 @@ export function MenuSection() {
       <section id="menu" className="py-20 bg-gray-50">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <div className="text-center">
-            <div className="inline-block bg-gradient-to-r from-green-500 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-semibold mb-4">
+            <div className="inline-block bg-gradient-to-r from-green-600 to-green-400 text-white px-6 py-2 rounded-full text-sm font-semibold mb-4">
               ✨ CARGANDO MENÚ ✨
             </div>
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
@@ -125,24 +126,23 @@ export function MenuSection() {
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         {/* Header Elegante */}
         <div className="text-center mb-20">
-          {/* Badge sutil */}
-          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-700 px-6 py-3 rounded-full text-sm font-medium mb-6 shadow-sm">
-            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Menú Completo
+          {/* Badge mejorado */}
+          <div className={`inline-flex items-center gap-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 text-green-800 px-8 py-4 rounded-full text-sm font-bold mb-8 shadow-lg hover:shadow-xl transition-shadow`}>
+            <span className="text-2xl animate-pulse">🍽️</span>
+            <span>Descubre Nuestros Sabores Únicos</span>
+            <span className="text-2xl animate-pulse">🦐</span>
           </div>
           
           {/* Título Principal */}
           <div className="relative mb-6">
             <h2 className="text-5xl md:text-7xl font-bold tracking-tight">
               <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Nuestro</span>
-              <span className="bg-gradient-to-r from-green-600 to-orange-500 bg-clip-text text-transparent ml-4">Menú</span>
+              <span className="bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent ml-4">Menú</span>
             </h2>
             {/* Línea decorativa */}
             <div className="flex items-center justify-center mt-4">
               <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent w-32"></div>
-              <div className="mx-4 w-2 h-2 bg-gradient-to-r from-green-500 to-orange-500 rounded-full"></div>
+              <div className="mx-4 w-2 h-2 bg-gradient-to-r from-green-600 to-green-400 rounded-full"></div>
               <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent w-32"></div>
             </div>
           </div>
@@ -153,38 +153,7 @@ export function MenuSection() {
             preparados con más de 50 años de experiencia culinaria
           </p>
           
-          {/* Features elegantes y llamativas con mejor espaciado */}
-          <div className="flex flex-wrap justify-center gap-8 mb-16">
-            <div className="group flex items-center gap-5 bg-gradient-to-r from-green-50 to-emerald-50 px-10 py-6 rounded-3xl border-2 border-green-200/50 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-3xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
-                <span className="text-white text-xl">🌱</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-green-700 uppercase tracking-wider mb-1">Garantía</span>
-                <span className="text-base font-bold text-green-800">Productos Frescos</span>
-              </div>
-            </div>
-            
-            <div className="group flex items-center gap-5 bg-gradient-to-r from-orange-50 to-amber-50 px-10 py-6 rounded-3xl border-2 border-orange-200/50 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-3xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
-                <span className="text-white text-xl">👨‍🍳</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-orange-700 uppercase tracking-wider mb-1">Tradición</span>
-                <span className="text-base font-bold text-orange-800">Recetas Tradicionales</span>
-              </div>
-            </div>
-            
-            <div className="group flex items-center gap-5 bg-gradient-to-r from-amber-50 to-yellow-50 px-10 py-6 rounded-3xl border-2 border-amber-200/50 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-3xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
-                <span className="text-white text-xl">⭐</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-amber-700 uppercase tracking-wider mb-1">Experiencia</span>
-                <span className="text-base font-bold text-amber-800">50+ Años de Experiencia</span>
-              </div>
-            </div>
-          </div>
+
         </div>
 
         {/* Menu Book Style */}
@@ -246,7 +215,7 @@ export function MenuSection() {
 
         {/* WhatsApp Order Section */}
         <div className="mt-16">
-          <Card className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-orange-50 border-2 border-green-200">
+            <Card className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-200">
             <CardContent className="p-8 text-center">
               <div className="mb-6">
                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -60,13 +60,6 @@ export function AboutSection() {
             </h2>
             
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              En <strong>{restauranteInfo.nombre}</strong>, llevamos más de {restauranteInfo.anos_experiencia} años dedicados a 
-              ofrecer la mejor experiencia gastronómica de mariscos. Nuestra pasión por 
-              los productos del mar nos ha convertido en el destino favorito para los 
-              amantes de los mariscos frescos.
-            </p>
-            
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
               {restauranteInfo.descripcion_larga}
             </p>
 

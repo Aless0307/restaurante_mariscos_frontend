@@ -44,7 +44,7 @@ export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <Card className="w-full max-w-md mx-4">
         <CardHeader className="text-center pb-4">
-          <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 bg-gradient-to-r from-green-600 to-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">👨‍💼</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-800">Panel de Administración</h2>
@@ -102,7 +102,7 @@ export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-green-500 to-orange-500 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-gradient-to-r from-green-600 to-green-400 text-white px-4 py-2 rounded-lg hover:from-green-700 hover:to-green-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">

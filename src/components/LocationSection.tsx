@@ -45,7 +45,7 @@ export function LocationSection() {
               <CardContent className="p-0 h-full">
                 {/* Google Maps Embed */}
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.8886!2d-96.1644!3d19.2065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c35afbf3b63a5d%3A0x5a4f7e0e1b8c9d3a!2sCarr.+Veracruz+-+Medell%C3%ADn%2C+Veracruz%2C+Ver.%2C+M%C3%A9xico!5e0!3m2!1ses!2smx!4v1234567890123"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.1266!2d-96.1496275!3d19.1114978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c3418b05a3fc41%3A0x3d92782e4f2a3e66!2sRestaurant%20Familiar%20Dario!5e0!3m2!1ses!2smx!4v1729970400000"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -57,12 +57,13 @@ export function LocationSection() {
                 />
 
                 {/* Map Overlay */}
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span className="font-semibold text-gray-800">
+                <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg flex items-center space-x-3">
+                  <div className="text-2xl">🍴</div>
+                  <div>
+                    <div className="font-semibold text-gray-800">
                       {restauranteInfo.nombre}
-                    </span>
+                    </div>
+                    <div className="text-sm text-gray-600">Restaurante Familiar</div>
                   </div>
                 </div>
               </CardContent>

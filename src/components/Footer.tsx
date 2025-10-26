@@ -142,7 +142,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
           <p className="text-gray-400">
-            © 2024 <span className="text-green-400">{primerNombre}</span> {restoNombre && <span className="text-orange-400">{restoNombre}</span>}. 
+            © 2025 <span className="text-green-400">{primerNombre}</span> {restoNombre && <span className="text-orange-400">{restoNombre}</span>}. 
             Todos los derechos reservados.
           </p>
         </div>
