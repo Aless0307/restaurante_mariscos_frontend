@@ -157,34 +157,50 @@ const SimpleImageManager: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">📸 Estado de las Categorías del Menú</h2>
-          <p className="text-gray-600">Verifica que todas tus categorías estén intactas</p>
+          <h2 className="text-2xl font-bold text-gray-800">Estado de las Categorías del Menú</h2>
+          <p className="text-base text-gray-600 mt-1">Verifica que todas tus categorías estén intactas</p>
         </div>
-        <Button onClick={cargarCategorias} disabled={loading}>
+        <Button 
+          onClick={cargarCategorias} 
+          disabled={loading}
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2"
+        >
           {loading ? 'Cargando...' : 'Actualizar'}
         </Button>
       </div>
 
-      <Alert className="border-blue-200 bg-blue-50">
-        <AlertDescription className="text-blue-800">
-          💡 <strong>Cómo usar:</strong> Haz clic en "Cambiar imagen" o "Agregar imagen" para seleccionar una foto de tu computadora. 
-          La imagen se subirá automáticamente y se asignará a la categoría.
+      <Alert className="border-l-4 border-l-green-600 bg-gradient-to-r from-green-50 to-white shadow-sm">
+        <AlertDescription className="text-gray-700">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <Upload className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <p className="font-semibold text-green-800 text-base mb-1">Cómo usar</p>
+              <p className="text-sm leading-relaxed">
+                Haz clic en <span className="font-medium text-green-700">"Cambiar imagen"</span> o <span className="font-medium text-green-700">"Agregar imagen"</span> para seleccionar una foto de tu computadora. 
+                La imagen se subirá automáticamente y se asignará a la categoría.
+              </p>
+            </div>
+          </div>
         </AlertDescription>
       </Alert>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categorias.map((categoria) => (
-          <Card key={categoria._id} className="border-2 border-blue-200">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-blue-700">
-                <span className="mr-2 text-2xl">{categoria.icono}</span>
-                {categoria.nombre}
+          <Card key={categoria._id} className="border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+            <CardHeader className="pb-2 bg-white border-b border-gray-100">
+              <CardTitle className="flex items-center justify-between text-gray-800 text-base font-semibold">
+                <div className="flex items-center">
+                  <span className="mr-2 text-2xl">{categoria.icono}</span>
+                  <span>{categoria.nombre}</span>
+                </div>
+                <span className="text-sm text-gray-500 font-normal">{categoria.total_items} items</span>
               </CardTitle>
-              <p className="text-sm text-gray-600">{categoria.total_items} items</p>
             </CardHeader>
             
-            <CardContent>
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden mb-3">
+            <CardContent className="p-4">
+              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden mb-4 shadow-inner">
                 {categoria.imagen_url ? (
                   <img
                     src={categoria.imagen_url}
@@ -194,21 +210,20 @@ const SimpleImageManager: React.FC = () => {
                       e.currentTarget.style.display = 'none';
                       const parent = e.currentTarget.parentElement;
                       if (parent) {
-                        parent.innerHTML = '<div class="text-red-500 text-center"><p>⚠️ Error de URL</p></div>';
+                        parent.innerHTML = '<div class="text-red-500 text-center p-4"><p class="font-semibold text-sm">Error al cargar imagen</p></div>';
                       }
                     }}
                   />
                 ) : (
-                  <div className="text-center text-gray-500">
+                  <div className="text-center text-gray-400 p-4">
                     <span className="text-4xl block mb-2">{categoria.icono}</span>
-                    <p className="text-sm">Sin imagen asignada</p>
-                    <p className="text-xs text-gray-400 mt-1">Haz clic en "Cambiar imagen" para agregar una</p>
+                    <p className="text-sm font-medium text-gray-500">Sin imagen</p>
                   </div>
                 )}
               </div>
               
               {/* Botón para cambiar imagen */}
-              <div className="mb-3">
+              <div>
                 <input
                   type="file"
                   accept="image/*"
@@ -217,7 +232,7 @@ const SimpleImageManager: React.FC = () => {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      console.log('📁 Archivo seleccionado:', file.name);
+                      console.log('Archivo seleccionado:', file.name);
                       cambiarImagenCategoria(categoria._id, file);
                     }
                   }}
@@ -225,7 +240,7 @@ const SimpleImageManager: React.FC = () => {
                 />
                 <Button
                   variant={categoria.imagen_url ? "outline" : "default"}
-                  className="w-full"
+                  className={`w-full font-semibold ${categoria.imagen_url ? 'border-green-600 text-green-700 hover:bg-green-50' : 'bg-green-600 hover:bg-green-700 text-white'}`}
                   disabled={uploadingCategory === categoria._id}
                   onClick={() => {
                     const fileInput = document.getElementById(`file-input-${categoria._id}`) as HTMLInputElement;
@@ -240,14 +255,6 @@ const SimpleImageManager: React.FC = () => {
                       : 'Agregar imagen'
                   }
                 </Button>
-              </div>
-              
-              <div className="space-y-2 text-xs text-gray-500">
-                <p><strong>ID:</strong> {categoria._id}</p>
-                {categoria.imagen_url && (
-                  <p className="break-all"><strong>URL:</strong> {categoria.imagen_url.substring(0, 50)}...</p>
-                )}
-                <p><strong>Estado:</strong> {uploadingCategory === categoria._id ? '🔄 Procesando...' : '✅ Listo'}</p>
               </div>
             </CardContent>
           </Card>

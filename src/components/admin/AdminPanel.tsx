@@ -471,37 +471,52 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
   const categoriasActivas = categorias.filter(cat => cat.activo).length;
   const promedioItemsPorCategoria = categorias.length > 0 ? Math.round(totalItems / categorias.length) : 0;
 
-  const renderDashboard = () => (
+  const renderDashboard = () => {
+    // Calcular categorías con más platillos
+    const topCategorias = [...categorias]
+      .sort((a, b) => {
+        const itemsA = a.total_items || a.items?.length || 0;
+        const itemsB = b.total_items || b.items?.length || 0;
+        return itemsB - itemsA;
+      })
+      .slice(0, 5);
+
+    return (
     <div className="space-y-8">
-      {/* Bienvenida Elegante y Refinada */}
+      {/* Bienvenida Elegante con Gradiente Verde */}
       <div 
-        className="relative rounded-3xl overflow-hidden shadow-xl border border-gray-300 p-8"
-        style={{ backgroundColor: '#1e293b' }}
+        className="relative rounded-3xl overflow-hidden shadow-xl border-2 p-8"
+        style={{ 
+          background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.green[400]})`,
+          borderColor: AdminTheme.primary.green[300]
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="space-y-4">
             <h2 className="text-3xl font-semibold" style={{ color: '#ffffff' }}>
               Bienvenido de vuelta
             </h2>
-            <p className="text-lg max-w-md" style={{ color: '#e5e7eb' }}>
+            <p className="text-lg max-w-md" style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
               Hola <span className="font-semibold" style={{ color: '#ffffff' }}>{usuario?.nombre || 'Administrador'}</span>, 
               gestiona tu restaurante de manera eficiente
             </p>
             <div className="flex items-center space-x-6 pt-4">
-              <div className="flex items-center space-x-2 rounded-xl px-4 py-2" style={{ backgroundColor: '#059669' }}>
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#86efac' }}></div>
+              <div className="flex items-center space-x-2 rounded-xl px-4 py-2 border-2" 
+                   style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)' }}>
+                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#ffffff' }}></div>
                 <span className="font-medium text-sm" style={{ color: '#ffffff' }}>Sistema activo</span>
               </div>
-              <div className="flex items-center space-x-2 rounded-xl px-4 py-2" style={{ backgroundColor: '#2563eb' }}>
-                <Clock className="w-4 h-4" style={{ color: '#93c5fd' }} />
+              <div className="flex items-center space-x-2 rounded-xl px-4 py-2 border-2" 
+                   style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)' }}>
+                <Clock className="w-4 h-4" style={{ color: '#ffffff' }} />
                 <span className="font-medium text-sm" style={{ color: '#ffffff' }}>Sesión: {timeRemaining}</span>
               </div>
             </div>
           </div>
           <div className="hidden md:block">
             <div 
-              className="w-20 h-20 rounded-2xl border flex items-center justify-center"
-              style={{ backgroundColor: '#374151', borderColor: '#4b5563' }}
+              className="w-20 h-20 rounded-2xl border-2 flex items-center justify-center shadow-lg"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)', borderColor: 'rgba(255, 255, 255, 0.4)' }}
             >
               <ChefHat className="w-10 h-10" style={{ color: '#ffffff' }} />
             </div>
@@ -509,252 +524,350 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
         </div>
       </div>
 
-      {/* Estadísticas Ultra Modernas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 lg:gap-6">
-        {/* Tarjeta de Categorías - Refinada */}
-        <div className="group relative">
-          <div className="absolute inset-0 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity" style={{
-            background: `linear-gradient(to right, ${AdminTheme.primary.green[300]}, ${AdminTheme.primary.orange[300]})`
-          }}></div>
-          <Card className="relative bg-white backdrop-blur-xl border hover:border-slate-300 transition-all duration-300 transform hover:scale-105 rounded-2xl shadow-lg" style={{borderColor: AdminTheme.neutral.slate[200]}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm" style={{
-                  background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.orange[500]})`
-                }}>
-                  <ChefHat className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />
-                </div>
+      {/* Resumen del Menú */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
+        {/* Categorías Principales */}
+        <Card className="border-2 rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300" style={{
+          borderColor: AdminTheme.primary.orange[200],
+          background: 'linear-gradient(135deg, rgba(255,255,255,1), rgba(255,247,237,0.5))'
+        }}>
+          <div className="p-6 border-b-2" style={{
+            background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[400]})`,
+            borderColor: AdminTheme.primary.orange[300]
+          }}>
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg border-2" style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                borderColor: 'rgba(255, 255, 255, 0.3)'
+              }}>
+                <ChefHat className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-wide mb-1" style={{color: AdminTheme.neutral.slate[600]}}>Categorías</p>
-                <p className="text-3xl font-bold mb-1" style={{color: AdminTheme.neutral.slate[800]}}>{categorias.length}</p>
-                <p className="text-sm" style={{color: AdminTheme.neutral.slate[500]}}>Secciones de tu menú</p>
+                <h3 className="text-2xl font-bold text-white">
+                  Categorías Principales
+                </h3>
+                <p className="text-sm text-white" style={{ opacity: 0.95 }}>
+                  Top 5 con más platillos
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tarjeta de Platillos - Refinada */}
-        <div className="group relative">
-          <div className="absolute inset-0 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity" style={{
-            background: `linear-gradient(to right, ${AdminTheme.primary.orange[300]}, ${AdminTheme.primary.green[300]})`
-          }}></div>
-          <Card className="relative bg-white backdrop-blur-xl border hover:border-slate-300 transition-all duration-300 transform hover:scale-105 rounded-2xl shadow-lg" style={{borderColor: AdminTheme.neutral.slate[200]}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm" style={{
-                  background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.green[500]})`
-                }}>
-                  <DollarSign className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wide mb-1" style={{color: AdminTheme.neutral.slate[600]}}>Platillos</p>
-                <p className="text-3xl font-bold mb-1" style={{color: AdminTheme.neutral.slate[800]}}>{totalItems}</p>
-                <p className="text-sm" style={{color: AdminTheme.neutral.slate[500]}}>Total en tu menú</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tarjeta de Activas - Refinada */}
-        <div className="group relative">
-          <div className="absolute inset-0 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity" style={{
-            background: `linear-gradient(to right, ${AdminTheme.status.success[300]}, ${AdminTheme.primary.green[300]})`
-          }}></div>
-          <Card className="relative bg-white backdrop-blur-xl border hover:border-slate-300 transition-all duration-300 transform hover:scale-105 rounded-2xl shadow-lg" style={{borderColor: AdminTheme.neutral.slate[200]}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm" style={{
-                  backgroundColor: AdminTheme.status.success[500]
-                }}>
-                  <Eye className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wide mb-1" style={{color: AdminTheme.neutral.slate[600]}}>Activas</p>
-                <p className="text-3xl font-bold mb-1" style={{color: AdminTheme.neutral.slate[800]}}>{categoriasActivas}</p>
-                <p className="text-sm" style={{color: AdminTheme.neutral.slate[500]}}>Categorías visibles</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tarjeta de Promedio - Refinada */}
-        <div className="group relative">
-          <div className="absolute inset-0 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity" style={{
-            background: `linear-gradient(to right, ${AdminTheme.primary.orange[400]}, ${AdminTheme.primary.red[400]})`
-          }}></div>
-          <Card className="relative bg-white backdrop-blur-xl border hover:border-slate-300 transition-all duration-300 transform hover:scale-105 rounded-2xl shadow-lg" style={{borderColor: AdminTheme.neutral.slate[200]}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm" style={{
-                  backgroundColor: AdminTheme.primary.red[500]
-                }}>
-                  <TrendingUp className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wide mb-1" style={{color: AdminTheme.neutral.slate[600]}}>Promedio</p>
-                <p className="text-3xl font-bold mb-1" style={{color: AdminTheme.neutral.slate[800]}}>{promedioItemsPorCategoria}</p>
-                <p className="text-sm" style={{color: AdminTheme.neutral.slate[500]}}>Platillos por categoría</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Acciones Rápidas Ultra Modernas - TEMA REFINADO */}
-      <div className="relative group">
-        <Card 
-          className="border-2 hover:border-gray-400 transition-all duration-300 rounded-3xl shadow-lg hover:shadow-xl"
-          style={{ backgroundColor: '#f9fafb', borderColor: '#d1d5db' }}
-        >
-          <CardContent className="p-10 text-center">
-            <div className="mb-8">
-              <div 
-                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border-2"
-                style={{ backgroundColor: '#0f172a', borderColor: '#334155' }}
-              >
-                <Plus className="w-8 h-8" style={{ color: '#ffffff' }} />
-              </div>
-              <h3 className="text-2xl font-semibold mb-3" style={{ color: '#111827' }}>¿Quieres agregar algo nuevo?</h3>
-              <p className="text-lg mb-8 max-w-md mx-auto font-normal" style={{ color: '#374151' }}>
-                Empieza creando una nueva categoría como <span className="font-semibold" style={{ color: '#111827' }}>"Mariscos"</span>, 
-                <span className="font-semibold" style={{ color: '#111827' }}> "Carnes"</span> o 
-                <span className="font-semibold" style={{ color: '#111827' }}> "Bebidas"</span>
-              </p>
             </div>
-            <button
-              onClick={() => openAddCategory()}
-              className="px-10 py-4 rounded-2xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2"
-              style={{ 
-                backgroundColor: '#0f172a', 
-                borderColor: '#334155',
-                color: '#ffffff'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#000000';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#0f172a';
-              }}
-            >
-              <div className="flex items-center justify-center space-x-3">
-                <Plus className="w-5 h-5" style={{ color: '#ffffff' }} />
-                <span className="font-semibold" style={{ color: '#ffffff' }}>Crear Nueva Categoría</span>
+          </div>
+          <CardContent className="p-6">
+            <div className="space-y-3">
+              {topCategorias.length > 0 ? (
+                topCategorias.map((cat, index) => {
+                  const itemCount = cat.total_items || cat.items?.length || 0;
+                  return (
+                    <div key={cat.id} className="flex items-center justify-between p-5 rounded-2xl border-2 transition-all hover:shadow-lg hover:scale-[1.02] duration-300" style={{
+                      backgroundColor: 'rgba(255,255,255,0.9)',
+                      borderColor: AdminTheme.primary.orange[200]
+                    }}>
+                      <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-md" style={{
+                          background: `linear-gradient(135deg, ${AdminTheme.primary.orange[400]}, ${AdminTheme.primary.orange[500]})`,
+                          color: '#ffffff'
+                        }}>
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-bold text-lg" style={{ color: AdminTheme.primary.orange[800] }}>{cat.nombre}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-xs px-2 py-1 rounded-lg font-semibold" style={{
+                              backgroundColor: cat.activo ? AdminTheme.primary.orange[100] : AdminTheme.neutral.slate[200],
+                              color: cat.activo ? AdminTheme.primary.orange[700] : AdminTheme.neutral.slate[600]
+                            }}>
+                              {cat.activo ? '● Visible' : '○ Oculta'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-3xl font-black" style={{
+                          background: `linear-gradient(135deg, ${AdminTheme.primary.orange[600]}, ${AdminTheme.primary.orange[400]})`,
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent'
+                        }}>
+                          {itemCount}
+                        </p>
+                        <p className="text-xs font-semibold" style={{ color: AdminTheme.primary.orange[600] }}>platillos</p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{
+                    backgroundColor: AdminTheme.primary.orange[100]
+                  }}>
+                    <ChefHat className="w-8 h-8" style={{ color: AdminTheme.primary.orange[500] }} />
+                  </div>
+                  <p className="text-sm font-medium" style={{ color: AdminTheme.primary.orange[600] }}>
+                    No hay categorías creadas
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Estadísticas Rápidas */}
+        <Card className="border-2 rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300" style={{
+          borderColor: AdminTheme.primary.orange[200],
+          background: 'linear-gradient(135deg, rgba(255,255,255,1), rgba(255,247,237,0.5))'
+        }}>
+          <div className="p-6 border-b-2" style={{
+            background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[400]})`,
+            borderColor: AdminTheme.primary.orange[300]
+          }}>
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg border-2" style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                borderColor: 'rgba(255, 255, 255, 0.3)'
+              }}>
+                <BarChart3 className="w-7 h-7 text-white" />
               </div>
-            </button>
+              <div>
+                <h3 className="text-2xl font-bold text-white">
+                  Resumen General
+                </h3>
+                <p className="text-sm text-white" style={{ opacity: 0.95 }}>
+                  Estado actual del menú
+                </p>
+              </div>
+            </div>
+          </div>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="p-6 rounded-2xl border-2 transition-all hover:shadow-md duration-300" style={{
+                backgroundColor: 'rgba(255,255,255,0.9)',
+                borderColor: AdminTheme.primary.orange[200]
+              }}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                      background: `linear-gradient(135deg, ${AdminTheme.primary.orange[400]}, ${AdminTheme.primary.orange[500]})`,
+                    }}>
+                      <Store className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: AdminTheme.primary.orange[800] }}>
+                      Total de Categorías
+                    </span>
+                  </div>
+                  <span className="text-4xl font-black" style={{
+                    background: `linear-gradient(135deg, ${AdminTheme.primary.orange[600]}, ${AdminTheme.primary.orange[400]})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
+                    {categorias.length}
+                  </span>
+                </div>
+                <div className="w-full h-3 rounded-full overflow-hidden shadow-inner" style={{ backgroundColor: AdminTheme.primary.orange[100] }}>
+                  <div className="h-full rounded-full transition-all duration-500 shadow-lg" style={{
+                    width: `${(categoriasActivas / Math.max(categorias.length, 1)) * 100}%`,
+                    background: `linear-gradient(to right, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[400]})`
+                  }}></div>
+                </div>
+                <p className="text-xs mt-3 font-semibold" style={{ color: AdminTheme.primary.orange[700] }}>
+                  {categoriasActivas} categorías activas de {categorias.length} totales
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border-2 transition-all hover:shadow-md duration-300" style={{
+                backgroundColor: 'rgba(255,255,255,0.9)',
+                borderColor: AdminTheme.primary.orange[200]
+              }}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                      background: `linear-gradient(135deg, ${AdminTheme.primary.orange[400]}, ${AdminTheme.primary.orange[500]})`,
+                    }}>
+                      <ChefHat className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: AdminTheme.primary.orange[800] }}>
+                      Total de Platillos
+                    </span>
+                  </div>
+                  <span className="text-4xl font-black" style={{
+                    background: `linear-gradient(135deg, ${AdminTheme.primary.orange[600]}, ${AdminTheme.primary.orange[400]})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
+                    {totalItems}
+                  </span>
+                </div>
+                <p className="text-xs font-semibold" style={{ color: AdminTheme.primary.orange[700] }}>
+                  Promedio de {promedioItemsPorCategoria} platillos por categoría
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border-2 transition-all hover:shadow-md duration-300" style={{
+                backgroundColor: 'rgba(255,255,255,0.9)',
+                borderColor: AdminTheme.primary.orange[200]
+              }}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                      background: `linear-gradient(135deg, ${AdminTheme.primary.orange[400]}, ${AdminTheme.primary.orange[500]})`,
+                    }}>
+                      <Activity className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: AdminTheme.primary.orange[800] }}>
+                      Estado del Sistema
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full animate-pulse shadow-lg" style={{ backgroundColor: AdminTheme.primary.orange[500] }}></div>
+                    <span className="text-sm font-bold" style={{ color: AdminTheme.primary.orange[700] }}>
+                      Operativo
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Resumen del menú */}
-      <div className="relative group">
-        <Card className="backdrop-blur-xl border border-gray-200 hover:border-gray-300 transition-all duration-300 rounded-3xl shadow-lg bg-white/95">
-          <CardHeader className="rounded-t-3xl border-b border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-gray-700 to-slate-800 flex items-center justify-center shadow-sm">
-                <ChefHat className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-semibold text-gray-800">Tu Menú Actual</h3>
-                <p className="text-gray-600 font-light">Vista general de tus categorías principales</p>
-              </div>
+      {/* Lista de todas las categorías */}
+      <div className="py-4">
+      <Card className="border-2 rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300" style={{
+        borderColor: AdminTheme.primary.green[200],
+        background: 'linear-gradient(135deg, rgba(255,255,255,1), rgba(240,253,244,0.3))'
+      }}>
+        <div className="p-6 border-b-2" style={{
+          background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.green[400]})`,
+          borderColor: AdminTheme.primary.green[300]
+        }}>
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg border-2" style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.25)',
+              borderColor: 'rgba(255, 255, 255, 0.3)'
+            }}>
+              <Store className="w-7 h-7 text-white" />
             </div>
-          </CardHeader>
-          <CardContent className="p-6">
-            {categorias.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-20 h-20 bg-gradient-to-r from-gray-100 to-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <ChefHat className="w-10 h-10 text-gray-400" />
-                </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-3">¡Aún no tienes categorías!</h4>
-                <p className="text-gray-600 mb-8 max-w-sm mx-auto font-light">
-                  Comienza creando tu primera categoría para organizar tus platillos
-                </p>
-                <button 
-                  onClick={() => openAddCategory()}
-                  className="bg-gradient-to-r from-gray-700 to-slate-800 hover:from-gray-800 hover:to-slate-900 text-white px-8 py-4 rounded-2xl transition-all duration-300 font-semibold shadow-lg transform hover:scale-105"
-                >
-                  Crear Mi Primera Categoría
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-                {categorias.slice(0, 6).map((categoria) => (
-                  <div key={categoria.id} className="group relative">
-                    <div className="relative bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform group-hover:scale-105 hover:border-gray-300">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-700 to-slate-800 flex items-center justify-center text-white text-xl shadow-sm">
-                            {categoria.icono}
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-lg text-gray-800">{categoria.nombre}</h4>
-                            <p className="text-sm text-gray-500">{categoria.total_items || categoria.items?.length || 0} platillos</p>
-                          </div>
+            <div>
+              <h3 className="text-2xl font-bold text-white">
+                Todas las Categorías
+              </h3>
+              <p className="text-sm text-white" style={{ opacity: 0.95 }}>
+                Vista completa del menú
+              </p>
+            </div>
+          </div>
+        </div>
+        <CardContent className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {categorias.map((cat) => {
+              const itemCount = cat.total_items || cat.items?.length || 0;
+              return (
+                <div key={cat.id} className="p-6 rounded-2xl border-2 transition-all hover:shadow-xl hover:scale-[1.03] duration-300" style={{
+                  backgroundColor: cat.activo ? 'rgba(255,255,255,0.98)' : 'rgba(248,250,252,0.98)',
+                  borderColor: cat.activo ? AdminTheme.primary.green[300] : AdminTheme.neutral.slate[300]
+                }}>
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 pr-4">
+                        <h4 className="font-bold text-xl mb-3 leading-tight" style={{ 
+                          color: cat.activo ? AdminTheme.primary.green[800] : AdminTheme.neutral.slate[700] 
+                        }}>
+                          {cat.nombre}
+                        </h4>
+                        <div className="inline-flex items-center space-x-2">
+                          <div className={`w-2 h-2 rounded-full ${cat.activo ? 'animate-pulse' : ''}`} style={{
+                            backgroundColor: cat.activo ? AdminTheme.status.success[500] : AdminTheme.neutral.slate[400]
+                          }}></div>
+                          <span className="text-xs font-bold uppercase tracking-wide" style={{
+                            color: cat.activo ? AdminTheme.status.success[700] : AdminTheme.neutral.slate[600]
+                          }}>
+                            {cat.activo ? 'Visible' : 'Oculta'}
+                          </span>
                         </div>
-                        {categoria.activo ? (
-                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center" title="Visible en el menú">
-                            <Eye className="w-4 h-4 text-green-600" />
-                          </div>
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" title="Oculta del menú">
-                            <EyeOff className="w-4 h-4 text-gray-500" />
-                          </div>
-                        )}
                       </div>
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={() => openEditCategory(categoria)}
-                          className="flex-1 px-4 py-3 rounded-xl text-sm transition-all duration-200 font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        >
-                          <Edit3 className="w-4 h-4 inline mr-2" />
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => openAddItem(categoria.id || categoria._id)}
-                          className="flex-1 px-4 py-3 rounded-xl text-sm transition-all duration-200 font-medium bg-green-100 text-green-700 hover:bg-green-200"
-                        >
-                          <Plus className="w-4 h-4 inline mr-2" />
-                          Platillos
-                        </button>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-4xl font-black mb-1" style={{
+                          background: cat.activo 
+                            ? `linear-gradient(135deg, ${AdminTheme.primary.green[600]}, ${AdminTheme.primary.green[400]})`
+                            : `linear-gradient(135deg, ${AdminTheme.neutral.slate[500]}, ${AdminTheme.neutral.slate[400]})`,
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent'
+                        }}>
+                          {itemCount}
+                        </p>
+                        <p className="text-xs font-semibold uppercase tracking-wide" style={{ 
+                          color: cat.activo ? AdminTheme.primary.green[600] : AdminTheme.neutral.slate[500] 
+                        }}>
+                          {itemCount === 1 ? 'platillo' : 'platillos'}
+                        </p>
                       </div>
                     </div>
                   </div>
-                ))}
+                </div>
+              );
+            })}
+          </div>
+          {categorias.length === 0 && (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg" style={{
+                background: `linear-gradient(135deg, ${AdminTheme.primary.orange[100]}, ${AdminTheme.primary.orange[200]})`
+              }}>
+                <ChefHat className="w-10 h-10" style={{ color: AdminTheme.primary.orange[600] }} />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <p className="text-lg font-semibold mb-2" style={{ color: AdminTheme.neutral.slate[700] }}>
+                No hay categorías creadas
+              </p>
+              <p className="text-sm" style={{ color: AdminTheme.neutral.slate[600] }}>
+                Ve a <span className="font-bold" style={{ color: AdminTheme.primary.orange[600] }}>Mi Menú</span> para crear una.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
       </div>
     </div>
-  );
+    );
+  };
 
   const renderMenuManagement = () => (
     <div className="space-y-8">
-      {/* Header Moderno y Elegante */}
+      {/* Header Moderno y Elegante con Color */}
       <div className="relative group">
-        <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-gray-200">
+        <div className="relative rounded-3xl p-8 shadow-lg border-2 overflow-hidden" 
+             style={{
+               background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[400]})`,
+               borderColor: AdminTheme.primary.orange[300]
+             }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-gray-700 to-slate-800 rounded-2xl flex items-center justify-center shadow-lg">
-                <ChefHat className="w-8 h-8 text-white" />
+            <div className="flex items-center space-x-8">
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border-2" 
+                   style={{ 
+                     backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+                     borderColor: 'rgba(255, 255, 255, 0.5)' 
+                   }}>
+                <ChefHat className="w-10 h-10 text-white"/>
               </div>
               <div>
-                <h3 className="text-3xl font-semibold text-gray-800 mb-2">Gestiona Tu Menú</h3>
-                <p className="text-gray-600 text-lg font-light">
+                <h3 className="text-3xl font-semibold mb-2" style={{ color: '#ffffff' }}>
+                  Gestiona Tu Menú
+                </h3>
+                <p className="text-lg font-light" style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
                   Edita categorías, agrega platillos y establece precios
                 </p>
                 <div className="flex items-center space-x-4 mt-3">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-                    <span className="text-gray-600 font-medium">{categorias.length} categorías</span>
+                  <div className="flex items-center space-x-2 text-sm px-4 py-2 rounded-lg border" 
+                       style={{ 
+                         backgroundColor: 'rgba(255, 255, 255, 0.25)', 
+                         borderColor: 'rgba(255, 255, 255, 0.4)' 
+                       }}>
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ffffff' }}></div>
+                    <span className="font-semibold" style={{ color: '#ffffff' }}>{categorias.length} categorías</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-3 h-3 bg-slate-600 rounded-full"></div>
-                    <span className="text-gray-600 font-medium">{totalItems} platillos</span>
+                  <div className="flex items-center space-x-2 text-sm px-4 py-2 rounded-lg border" 
+                       style={{ 
+                         backgroundColor: 'rgba(255, 255, 255, 0.25)', 
+                         borderColor: 'rgba(255, 255, 255, 0.4)' 
+                       }}>
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ffffff' }}></div>
+                    <span className="font-semibold" style={{ color: '#ffffff' }}>{totalItems} platillos</span>
                   </div>
                 </div>
               </div>
@@ -766,21 +879,39 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
       {/* Grid Moderno de Categorías */}
       {categorias.length === 0 ? (
         <div className="relative group">
-          <Card className="border-2 border-dashed border-gray-300 hover:border-gray-400 transition-all duration-300 rounded-3xl bg-white/95 backdrop-blur-xl shadow-lg">
+          <Card className="border-2 border-dashed transition-all duration-300 rounded-3xl shadow-lg overflow-hidden" 
+                style={{ 
+                  borderColor: AdminTheme.primary.orange[300],
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 247, 237, 0.95))'
+                }}>
             <CardContent className="p-16 text-center">
-              <div className="w-24 h-24 bg-gradient-to-r from-gray-700 to-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
+              <div className="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg" 
+                   style={{ 
+                     background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[600]})` 
+                   }}>
                 <ChefHat className="w-12 h-12 text-white" />
               </div>
-              <h4 className="text-3xl font-semibold text-gray-800 mb-4">¡Comienza a crear tu menú!</h4>
-              <p className="text-gray-600 text-lg mb-10 max-w-lg mx-auto font-light">
+              <h4 className="text-3xl font-semibold mb-4" style={{ color: AdminTheme.primary.orange[700] }}>
+                ¡Comienza a crear tu menú!
+              </h4>
+              <p className="text-lg mb-10 max-w-lg mx-auto font-light" style={{ color: AdminTheme.primary.orange[600] }}>
                 Las categorías te ayudan a organizar tus platillos. Por ejemplo: 
-                <span className="font-medium text-gray-700"> "Entradas"</span>, 
-                <span className="font-medium text-gray-700"> "Platos Principales"</span>, 
-                <span className="font-medium text-gray-700"> "Bebidas"</span>
+                <span className="font-medium" style={{ color: AdminTheme.primary.orange[700] }}> "Entradas"</span>, 
+                <span className="font-medium" style={{ color: AdminTheme.primary.orange[700] }}> "Platos Principales"</span>, 
+                <span className="font-medium" style={{ color: AdminTheme.primary.orange[700] }}> "Bebidas"</span>
               </p>
               <button 
                 onClick={() => openAddCategory()}
-                className="bg-gradient-to-r from-gray-700 to-slate-800 hover:from-gray-800 hover:to-slate-900 text-white px-12 py-5 rounded-2xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="text-white px-12 py-5 rounded-2xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+                style={{ 
+                  background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[600]})` 
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${AdminTheme.primary.orange[600]}, ${AdminTheme.primary.orange[700]})`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${AdminTheme.primary.orange[500]}, ${AdminTheme.primary.orange[600]})`;
+                }}
               >
                 <div className="flex items-center space-x-3">
                   <Plus className="w-6 h-6" />
@@ -794,30 +925,51 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6 lg:gap-8">
           {categorias.map((categoria) => (
             <div key={categoria.id} className="group relative">
-              <Card className="bg-white/95 backdrop-blur-sm hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-gray-300 transform group-hover:scale-105 rounded-3xl overflow-hidden">
+              <Card className="backdrop-blur-sm hover:shadow-2xl transition-all duration-300 border-2 transform group-hover:scale-105 rounded-3xl overflow-hidden" 
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 237, 0.95))',
+                      borderColor: AdminTheme.primary.orange[200]
+                    }}>
                 {/* Header de la tarjeta */}
-                <div className="bg-gradient-to-r from-gray-50 to-slate-50 border-b border-gray-200">
+                <div className="border-b-2" style={{
+                  background: `linear-gradient(135deg, ${AdminTheme.primary.orange[400]}, ${AdminTheme.primary.orange[500]})`,
+                  borderColor: AdminTheme.primary.orange[300]
+                }}>
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className="w-14 h-14 bg-gradient-to-r from-gray-700 to-slate-800 rounded-2xl flex items-center justify-center shadow-sm">
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg border-2" 
+                             style={{ 
+                               backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+                               borderColor: 'rgba(255, 255, 255, 0.5)' 
+                             }}>
                           <span className="text-2xl">{categoria.icono}</span>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-xl text-gray-800">{categoria.nombre}</h4>
-                          <p className="text-sm text-gray-500 font-medium">
+                          <h4 className="font-semibold text-xl" style={{ color: '#ffffff' }}>{categoria.nombre}</h4>
+                          <p className="text-sm font-medium" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                             {categoria.total_items || categoria.items?.length || 0} platillos disponibles
                           </p>
                         </div>
                       </div>
                       <div className="flex flex-col items-end space-y-2">
                         {categoria.activo ? (
-                          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-xl text-xs font-semibold flex items-center border border-green-200">
+                          <span className="px-3 py-1 rounded-xl text-xs font-semibold flex items-center border-2" 
+                                style={{ 
+                                  backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+                                  borderColor: 'rgba(255, 255, 255, 0.5)',
+                                  color: '#ffffff'
+                                }}>
                             <Eye className="w-3 h-3 mr-1" />
                             VISIBLE
                           </span>
                         ) : (
-                          <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-xl text-xs font-semibold flex items-center border border-gray-200">
+                          <span className="px-3 py-1 rounded-xl text-xs font-semibold flex items-center border-2" 
+                                style={{ 
+                                  backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+                                  borderColor: 'rgba(0, 0, 0, 0.3)',
+                                  color: 'rgba(255, 255, 255, 0.9)'
+                                }}>
                             <EyeOff className="w-3 h-3 mr-1" />
                             OCULTA
                           </span>
@@ -830,7 +982,18 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                               eliminarCategoria(categoria.id || categoria._id, categoria.nombre);
                             }
                           }}
-                          className="w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200 flex items-center justify-center border border-red-200"
+                          className="w-8 h-8 rounded-xl transition-all duration-200 flex items-center justify-center border-2"
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                            borderColor: 'rgba(255, 255, 255, 0.5)',
+                            color: '#ffffff'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(220, 38, 38, 0.9)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                          }}
                           title="Eliminar categoría"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -842,28 +1005,44 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 
                 <CardContent className="p-6">
                   {/* Lista de platillos moderna */}
-                  <div className="max-h-72 overflow-y-auto mb-6">
+                  <div className="max-h-72 overflow-y-auto mb-6 custom-scrollbar">
                     {categoria.items && categoria.items.length > 0 ? (
                       <div className="space-y-3">
                         {categoria.items.map((item, index) => (
                           <div 
                             key={`${categoria.id}-${index}`} 
-                            className="group bg-gray-50 rounded-2xl p-4 hover:bg-gray-100 transition-all duration-300 border border-gray-200 hover:border-gray-300"
+                            className="group rounded-2xl p-4 transition-all duration-300 border-2 hover:shadow-lg"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(254, 243, 199, 0.3))',
+                              borderColor: AdminTheme.primary.orange[200]
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = AdminTheme.primary.orange[400];
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = AdminTheme.primary.orange[200];
+                            }}
                           >
                             <div className="flex justify-between items-start">
                               <div className="flex-1 min-w-0 mr-4">
-                                <h5 className="font-semibold text-gray-800 truncate text-lg">{item.nombre}</h5>
+                                <h5 className="font-bold truncate text-lg" style={{ color: AdminTheme.primary.orange[700] }}>
+                                  {item.nombre}
+                                </h5>
                                 {item.descripcion && (
-                                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">{item.descripcion}</p>
+                                  <p className="text-sm mt-1 line-clamp-2" style={{ color: AdminTheme.primary.orange[600] }}>
+                                    {item.descripcion}
+                                  </p>
                                 )}
                                 <div className="mt-2 flex items-center space-x-2">
-                                  <span className="text-2xl font-bold text-green-600">${item.precio}</span>
-                                  <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
+                                  <span className="text-2xl font-black" style={{ color: AdminTheme.primary.green[600] }}>
+                                    ${item.precio}
+                                  </span>
+                                  <div className={`px-3 py-1 rounded-lg text-xs font-bold border-2 ${
                                     item.disponible 
-                                      ? 'bg-green-100 text-green-700 border border-green-200' 
-                                      : 'bg-red-100 text-red-700 border border-red-200'
+                                      ? 'bg-green-100 text-green-700 border-green-300' 
+                                      : 'bg-red-100 text-red-700 border-red-300'
                                   }`}>
-                                    {item.disponible ? 'Disponible' : 'No disponible'}
+                                    {item.disponible ? '✓ Disponible' : '✗ No disponible'}
                                   </div>
                                 </div>
                               </div>
@@ -874,7 +1053,20 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                                     e.stopPropagation();
                                     openEditItem(item, categoria.id || categoria._id);
                                   }}
-                                  className="w-8 h-8 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-xl transition-all duration-200 flex items-center justify-center border border-blue-200"
+                                  className="w-9 h-9 rounded-xl transition-all duration-200 flex items-center justify-center border-2 shadow-sm"
+                                  style={{
+                                    backgroundColor: AdminTheme.primary.green[100],
+                                    borderColor: AdminTheme.primary.green[300],
+                                    color: AdminTheme.primary.green[700]
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = AdminTheme.primary.green[200];
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = AdminTheme.primary.green[100];
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                  }}
                                   title="Editar platillo"
                                 >
                                   <Edit3 className="w-4 h-4" />
@@ -887,7 +1079,20 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                                       eliminarItem(categoria.id || categoria._id, item.nombre, index);
                                     }
                                   }}
-                                  className="w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-xl transition-all duration-200 flex items-center justify-center border border-red-200"
+                                  className="w-9 h-9 rounded-xl transition-all duration-200 flex items-center justify-center border-2 shadow-sm"
+                                  style={{
+                                    backgroundColor: '#fee2e2',
+                                    borderColor: '#fca5a5',
+                                    color: AdminTheme.primary.red[600]
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#fecaca';
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#fee2e2';
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                  }}
                                   title="Eliminar platillo"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -899,32 +1104,63 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                       </div>
                     ) : (
                       <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                          <ChefHat className="w-8 h-8 text-gray-400" />
+                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" 
+                             style={{ 
+                               background: `linear-gradient(135deg, ${AdminTheme.primary.orange[200]}, ${AdminTheme.primary.orange[300]})` 
+                             }}>
+                          <ChefHat className="w-8 h-8" style={{ color: AdminTheme.primary.orange[600] }} />
                         </div>
-                        <p className="text-gray-500 text-sm mb-2">
+                        <p className="text-sm mb-2 font-semibold" style={{ color: AdminTheme.primary.orange[600] }}>
                           {categoria.total_items && categoria.total_items > 0 
                             ? `${categoria.total_items} platillos disponibles` 
                             : 'Sin platillos aún'
                           }
                         </p>
-                        <p className="text-gray-400 text-xs">Agrega platillos para completar esta categoría</p>
+                        <p className="text-xs" style={{ color: AdminTheme.primary.orange[500] }}>
+                          Agrega platillos para completar esta categoría
+                        </p>
                       </div>
                     )}
                   </div>
 
                   {/* Botones de acción modernos */}
-                  <div className="flex space-x-3 pt-4 border-t border-gray-200">
+                  <div className="flex space-x-3 pt-4 border-t-2" style={{ borderColor: AdminTheme.primary.orange[200] }}>
                     <button
                       onClick={() => openEditCategory(categoria)}
-                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl text-sm hover:bg-gray-200 transition-all duration-300 font-semibold border border-gray-200 flex items-center justify-center space-x-2"
+                      className="flex-1 px-4 py-3 rounded-xl text-sm transition-all duration-300 font-semibold border-2 flex items-center justify-center space-x-2 shadow-sm"
+                      style={{
+                        backgroundColor: AdminTheme.primary.orange[100],
+                        borderColor: AdminTheme.primary.orange[300],
+                        color: AdminTheme.primary.orange[700]
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = AdminTheme.primary.orange[200];
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = AdminTheme.primary.orange[100];
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
                     >
                       <Edit3 className="w-4 h-4" />
                       <span>Editar Categoría</span>
                     </button>
                     <button
                       onClick={() => openAddItem(categoria.id || categoria._id)}
-                      className="flex-1 bg-green-100 text-green-700 px-4 py-3 rounded-xl text-sm hover:bg-green-200 transition-all duration-300 font-semibold border border-green-200 flex items-center justify-center space-x-2"
+                      className="flex-1 px-4 py-3 rounded-xl text-sm transition-all duration-300 font-semibold border-2 flex items-center justify-center space-x-2 shadow-sm"
+                      style={{
+                        backgroundColor: AdminTheme.primary.green[100],
+                        borderColor: AdminTheme.primary.green[300],
+                        color: AdminTheme.primary.green[700]
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = AdminTheme.primary.green[200];
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = AdminTheme.primary.green[100];
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
                     >
                       <Plus className="w-4 h-4" />
                       <span>Agregar Platillo</span>
@@ -986,19 +1222,16 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
       </div>
 
       {/* Header Ultra Moderno - TEMA RESTAURANTE VERDE/NARANJA */}
-      <header className="relative z-10 shadow-2xl border-b-4" style={{
-        background: `linear-gradient(to right, ${AdminTheme.primary.green[800]}, ${AdminTheme.primary.green[900]}, ${AdminTheme.primary.green[800]})`,
-        borderColor: AdminTheme.primary.orange[500]
+      <header className="relative z-10 shadow-2xl border-b-4 bg-green-600" style={{
+        borderColor: AdminTheme.primary.green[500]
       }}>
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="flex justify-between items-center h-24">
             {/* Logo y Título */}
-            <div className="flex items-center space-x-5">
+            <div className="flex items-center space-x-8">
               <div className="relative">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-transform duration-200" style={{
-                  background: `linear-gradient(to right, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.orange[500]})`
-                }}>
-                  <ChefHat className="w-9 h-9 text-white" style={{color: AdminTheme.neutral.white}} />
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-transform duration-200 bg-white">
+                  <ChefHat className="w-9 h-9 text-green-600" />
                 </div>
               </div>
               <div>
@@ -1120,55 +1353,66 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
               borderColor: AdminTheme.primary.green[200] 
             }}>
               <nav className="flex space-x-3">
-                {tabs.map((tab, index) => (
+                {tabs.map((tab, index) => {
+                  // Definir el color sólido según el tab
+                  let backgroundColor = '';
+                  let borderColor = '';
+                  if (tab.id === 'dashboard') {
+                    backgroundColor = '#16a34a'; // Verde sólido
+                    borderColor = '#15803d'; // Verde más oscuro
+                  } else if (tab.id === 'menu') {
+                    backgroundColor = '#f97316'; // Naranja sólido
+                    borderColor = '#ea580c'; // Naranja más oscuro
+                  } else if (tab.id === 'imagenes') {
+                    backgroundColor = '#16a34a'; // Verde sólido
+                    borderColor = '#15803d'; // Verde más oscuro
+                  } else if (tab.id === 'info') {
+                    backgroundColor = '#f97316'; // Naranja sólido
+                    borderColor = '#ea580c'; // Naranja más oscuro
+                  }
+                  
+                  return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`group relative flex-1 flex items-center justify-center space-x-2 lg:space-x-4 py-4 lg:py-6 px-4 lg:px-8 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-102 ${
                       activeTab === tab.id
-                        ? 'text-white shadow-lg border scale-102'
+                        ? 'shadow-lg border-2 scale-102'
                         : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-transparent hover:border-slate-200 hover:shadow-md'
                     }`}
                     style={activeTab === tab.id ? { 
-                      background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.orange[500]})`,
-                      color: AdminTheme.neutral.white,
-                      borderColor: AdminTheme.primary.green[400],
-                      boxShadow: `0 10px 25px -5px rgba(34, 197, 94, 0.25)`
+                      backgroundColor: backgroundColor,
+                      color: '#ffffff',
+                      borderColor: borderColor,
+                      boxShadow: `0 10px 25px -5px rgba(34, 197, 94, 0.15)`
                     } : { 
                       color: AdminTheme.neutral.slate[700], 
                       backgroundColor: 'transparent' 
                     }}
                   >
-                    {/* Efecto de fondo suave para tab activo */}
-                    {activeTab === tab.id && (
-                      <div className="absolute inset-0 rounded-2xl opacity-20" style={{
-                        background: `linear-gradient(135deg, ${AdminTheme.primary.green[400]}, ${AdminTheme.primary.orange[400]})`
-                      }}></div>
-                    )}
-                    
                     {/* Contenido del botón */}
                     <div className="relative z-10 flex items-center space-x-4">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         activeTab === tab.id 
-                          ? 'bg-white/20 shadow-sm' 
+                          ? 'bg-white/40 shadow-sm' 
                           : 'bg-gray-100 group-hover:bg-gray-200'
                       }`}
                       style={activeTab === tab.id ? { 
-                        backgroundColor: 'rgba(255,255,255,0.25)'
+                        backgroundColor: 'rgba(255,255,255,0.4)'
                       } : { 
                         backgroundColor: AdminTheme.neutral.slate[100]
                       }}>
                         <div className="transition-all duration-300" 
-                             style={{ color: activeTab === tab.id ? AdminTheme.neutral.white : AdminTheme.neutral.slate[600] }}>
+                             style={{ color: activeTab === tab.id ? '#ffffff' : AdminTheme.neutral.slate[600] }}>
                           {React.cloneElement(tab.icon, { 
                             className: `w-5 h-5 transition-all duration-300`,
-                            style: { color: activeTab === tab.id ? AdminTheme.neutral.white : AdminTheme.neutral.slate[600] }
+                            style: { color: activeTab === tab.id ? '#ffffff' : AdminTheme.neutral.slate[600] }
                           })}
                         </div>
                       </div>
                       
                       <div className="text-left">
-                        <span className="text-lg font-semibold block" style={{ color: activeTab === tab.id ? AdminTheme.neutral.white : AdminTheme.neutral.slate[700] }}>
+                        <span className="text-lg font-semibold block" style={{ color: activeTab === tab.id ? '#ffffff' : AdminTheme.neutral.slate[700] }}>
                           {tab.label}
                         </span>
                       </div>
@@ -1176,50 +1420,14 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                     
                     {/* Línea de progreso inferior */}
                     {activeTab === tab.id && (
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 rounded-b-2xl" style={{ backgroundColor: '#f59e0b' }}></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-1 rounded-b-2xl" style={{ 
+                        backgroundColor: tab.id === 'dashboard' || tab.id === 'imagenes' ? '#16a34a' : '#f97316'
+                      }}></div>
                     )}
                   </button>
-                ))}
+                  );
+                })}
               </nav>
-            </div>
-          </div>
-          
-          {/* Descripción Elegante y Refinada */}
-          <div className="mt-6">
-            <div className="relative group">
-              <div className="absolute inset-0 rounded-3xl blur opacity-10 group-hover:opacity-20 transition-opacity duration-300" style={{
-                background: `linear-gradient(to right, ${AdminTheme.primary.green[200]}, ${AdminTheme.primary.orange[200]})`
-              }}></div>
-              <div className="relative backdrop-blur-xl rounded-2xl p-6 border shadow-lg transition-all duration-300" style={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-                borderColor: AdminTheme.neutral.slate[200] 
-              }}>
-                <div className="flex items-center justify-center space-x-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm" style={{
-                    background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.orange[500]})`
-                  }}>
-                    {activeTab === 'dashboard' && <BarChart3 className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />}
-                    {activeTab === 'menu' && <ChefHat className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />}
-                    {activeTab === 'imagenes' && <Image className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />}
-                    {activeTab === 'info' && <Store className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />}
-                  </div>
-                  <div className="text-center">
-                    <h3 className="text-xl font-bold mb-1" style={{color: AdminTheme.neutral.slate[800]}}>
-                      {tabs.find(tab => tab.id === activeTab)?.label}
-                    </h3>
-                    <p className="text-sm font-medium leading-relaxed" style={{color: AdminTheme.neutral.slate[600]}}>
-                      {tabs.find(tab => tab.id === activeTab)?.description}
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Barra de progreso decorativa */}
-                <div className="mt-6">
-                  <div className="w-full h-2 bg-orange-200 rounded-full overflow-hidden" style={{backgroundColor: AdminTheme.primary.orange[200]}}>
-                    <div className="h-full bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 rounded-full animate-pulse shadow-lg" style={{backgroundColor: AdminTheme.primary.orange[500]}}></div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1235,34 +1443,71 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 background: `linear-gradient(135deg, ${AdminTheme.primary.green[300]}, ${AdminTheme.primary.orange[300]})`
               }}></div>
               
-              <div className="relative backdrop-blur-xl rounded-2xl shadow-xl border" style={{ 
+              <div className="relative backdrop-blur-xl rounded-2xl shadow-xl border overflow-hidden" style={{ 
                 backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                borderColor: AdminTheme.primary.green[200],
-                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(${AdminTheme.primary.green[50].slice(1).match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ')}, 0.3))`
+                borderColor: AdminTheme.neutral.slate[200]
               }}>
-                {/* Header colorido */}
-                <div className="p-6 border-b" style={{
-                  background: `linear-gradient(135deg, ${AdminTheme.primary.green[50]}, ${AdminTheme.primary.orange[50]})`,
-                  borderColor: AdminTheme.primary.green[100]
+                {/* Header con gradiente verde */}
+                <div className="p-8" style={{
+                  background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]} 0%, ${AdminTheme.primary.green[700]} 100%)`
                 }}>
-                  <div className="flex items-center space-x-4 mb-3">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md" style={{
-                      background: `linear-gradient(135deg, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.orange[500]})`
-                    }}>
-                      <Image className="w-6 h-6 text-white" style={{color: AdminTheme.neutral.white}} />
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-16 h-16 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 shadow-2xl" 
+                      style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        borderColor: 'rgba(255, 255, 255, 0.3)'
+                      }}>
+                      <Image className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold" style={{ color: AdminTheme.primary.green[800] }}>Gestión de Imágenes</h2>
-                      <p className="text-sm" style={{ color: AdminTheme.primary.orange[600] }}>Administra las imágenes del restaurante de forma fácil y eficiente</p>
+                      <h2 className="text-3xl font-bold text-white mb-1">Gestión de Imágenes</h2>
+                      <p className="text-lg font-medium" style={{ color: AdminTheme.primary.green[50] }}>
+                        Administra las imágenes del restaurante de forma fácil y eficiente
+                      </p>
                     </div>
                   </div>
-                  <div className="w-24 h-1 rounded-full" style={{
-                    background: `linear-gradient(to right, ${AdminTheme.primary.green[500]}, ${AdminTheme.primary.orange[500]})`
-                  }}></div>
+
+                  {/* Estadísticas del menú */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div className="backdrop-blur-sm rounded-xl p-4 border-2 shadow-lg" style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      borderColor: 'rgba(255, 255, 255, 0.25)'
+                    }}>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Image className="w-5 h-5 text-white" />
+                        <span className="font-semibold text-white">Total Categorías</span>
+                      </div>
+                      <p className="text-white text-3xl font-bold">{categorias.length}</p>
+                    </div>
+                    
+                    <div className="backdrop-blur-sm rounded-xl p-4 border-2 shadow-lg" style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      borderColor: 'rgba(255, 255, 255, 0.25)'
+                    }}>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Eye className="w-5 h-5 text-white" />
+                        <span className="font-semibold text-white">Categorías Activas</span>
+                      </div>
+                      <p className="text-white text-3xl font-bold">
+                        {categorias.filter(cat => cat.activo).length}
+                      </p>
+                    </div>
+                    
+                    <div className="backdrop-blur-sm rounded-xl p-4 border-2 shadow-lg" style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      borderColor: 'rgba(255, 255, 255, 0.25)'
+                    }}>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Activity className="w-5 h-5 text-white" />
+                        <span className="font-semibold text-white">Estado</span>
+                      </div>
+                      <p className="text-white text-3xl font-bold">Operativo</p>
+                    </div>
+                  </div>
                 </div>
                 
-                {/* Contenido con padding */}
-                <div className="p-6">
+                {/* Contenido con mejor espaciado */}
+                <div className="p-8">
                   <SimpleImageManager />
                 </div>
               </div>
@@ -1273,40 +1518,72 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
               backgroundColor: 'rgba(255, 255, 255, 0.95)', 
               borderColor: AdminTheme.neutral.slate[200] 
             }}>
-              <div className="bg-gradient-to-r p-8 text-white" style={{background: `linear-gradient(to right, ${AdminTheme.primary.green[700]}, ${AdminTheme.primary.green[800]}, ${AdminTheme.primary.green[700]})`}}>
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-16 h-16 backdrop-blur-sm rounded-2xl flex items-center justify-center border shadow-lg" style={{backgroundColor: AdminTheme.primary.green[600], borderColor: AdminTheme.primary.green[500]}}>
-                    <Settings className="w-8 h-8 text-white" style={{color: AdminTheme.neutral.white}} />
+              {/* Header mejorado con gradiente sutil */}
+              <div className="p-8" style={{
+                background: `linear-gradient(135deg, ${AdminTheme.primary.orange[500]} 0%, ${AdminTheme.primary.orange[600]} 100%)`
+              }}>
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-16 h-16 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 shadow-2xl" 
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      borderColor: 'rgba(255, 255, 255, 0.3)'
+                    }}>
+                    <Settings className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-3xl font-bold mb-2" style={{ color: AdminTheme.neutral.white }}>Información del Restaurante</h2>
-                    <p className="text-lg font-medium" style={{ color: AdminTheme.primary.green[100] }}>Personaliza los datos principales de tu restaurante</p>
+                    <h2 className="text-3xl font-bold text-white mb-1">Información del Restaurante</h2>
+                    <p className="text-lg font-medium text-white opacity-90">
+                      Personaliza los datos principales de tu restaurante
+                    </p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                  <div className="backdrop-blur-sm rounded-xl p-4 border shadow-lg" style={{backgroundColor: AdminTheme.primary.green[600], borderColor: AdminTheme.primary.green[500]}}>
-                    <div className="flex items-center space-x-2">
-                      <Store className="w-5 h-5" style={{ color: AdminTheme.primary.green[100] }} />
-                      <span className="font-semibold" style={{ color: AdminTheme.primary.green[100] }}>Configuración</span>
+                
+                {/* Tarjetas con diseño moderno */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="backdrop-blur-sm rounded-xl p-6 border shadow-lg hover:shadow-xl transition-all" 
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      borderColor: 'rgba(255, 255, 255, 0.3)'
+                    }}>
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md">
+                        <Settings className="w-6 h-6" style={{ color: AdminTheme.primary.orange[600] }} />
+                      </div>
+                      <span className="font-semibold text-white">Configuración</span>
                     </div>
-                    <p className="text-white text-2xl font-bold mt-1" style={{ color: AdminTheme.neutral.white }}>Completa</p>
+                    <p className="text-white text-3xl font-bold">Completa</p>
                   </div>
-                  <div className="backdrop-blur-sm rounded-xl p-4 border shadow-lg" style={{backgroundColor: AdminTheme.primary.orange[600], borderColor: AdminTheme.primary.orange[500]}}>
-                    <div className="flex items-center space-x-2">
-                      <Eye className="w-5 h-5" style={{ color: AdminTheme.primary.orange[100] }} />
-                      <span className="text-orange-100 font-semibold" style={{ color: AdminTheme.primary.orange[100] }}>Vista Previa</span>
+                  
+                  <div className="backdrop-blur-sm rounded-xl p-6 border shadow-lg hover:shadow-xl transition-all" 
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      borderColor: 'rgba(255, 255, 255, 0.3)'
+                    }}>
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md">
+                        <Eye className="w-6 h-6" style={{ color: AdminTheme.primary.orange[600] }} />
+                      </div>
+                      <span className="font-semibold text-white">Vista Previa</span>
                     </div>
-                    <p className="text-white text-2xl font-bold mt-1" style={{ color: AdminTheme.neutral.white }}>En Vivo</p>
+                    <p className="text-white text-3xl font-bold">En Vivo</p>
                   </div>
-                  <div className="backdrop-blur-sm rounded-xl p-4 border shadow-lg" style={{backgroundColor: AdminTheme.primary.green[600], borderColor: AdminTheme.primary.green[500]}}>
-                    <div className="flex items-center space-x-2">
-                      <Activity className="w-5 h-5" style={{ color: AdminTheme.primary.green[100] }} />
-                      <span className="font-semibold" style={{ color: AdminTheme.primary.green[100] }}>Estado</span>
+                  
+                  <div className="backdrop-blur-sm rounded-xl p-6 border shadow-lg hover:shadow-xl transition-all" 
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      borderColor: 'rgba(255, 255, 255, 0.3)'
+                    }}>
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md">
+                        <Activity className="w-6 h-6" style={{ color: AdminTheme.primary.orange[600] }} />
+                      </div>
+                      <span className="font-semibold text-white">Estado</span>
                     </div>
-                    <p className="text-white text-2xl font-bold mt-1" style={{ color: AdminTheme.neutral.white }}>Activo</p>
+                    <p className="text-white text-3xl font-bold">Activo</p>
                   </div>
                 </div>
               </div>
+              
               <div className="p-8">
                 <RestauranteInfoEditor token={token} />
               </div>
@@ -1319,15 +1596,34 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
       {showCategoryModal && (
         <EditCategoryModal
           category={editingCategory}
-          isOpen={showCategoryModal}
           onClose={() => {
             setShowCategoryModal(false);
             setEditingCategory(null);
           }}
-          onCategoryChange={() => {
-            handleCategoryChange();
-            setShowCategoryModal(false);
-            setEditingCategory(null);
+          onSave={async (categoryData) => {
+            const token = localStorage.getItem('adminToken');
+            const url = editingCategory
+              ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${editingCategory.id}`
+              : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias`;
+            
+            const method = editingCategory ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+              method,
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(categoryData),
+            });
+
+            if (response.ok) {
+              handleCategoryChange();
+              setShowCategoryModal(false);
+              setEditingCategory(null);
+            } else {
+              throw new Error('Error al guardar la categoría en el servidor');
+            }
           }}
         />
       )}

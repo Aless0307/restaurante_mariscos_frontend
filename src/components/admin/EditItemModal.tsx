@@ -95,24 +95,40 @@ export function EditItemModal({
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('adminToken');
+      
+      // Para UPDATE: usar categoryId ORIGINAL en la URL
+      // Para CREATE: usar selectedCategoryId en la URL
+      const urlCategoryId = item ? categoryId : selectedCategoryId;
+      
       const url = item 
-        ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${selectedCategoryId}/items/${item.nombre}`
+        ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${urlCategoryId}/items/${item.nombre}`
         : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${selectedCategoryId}/items`;
       
       const method = item ? 'PUT' : 'POST';
       
-      // Preparar el payload según el schema del backend
-      const payload = {
-        categoria_id: selectedCategoryId,  // Campo requerido por el backend
+      // Preparar el payload
+      let payload: any = {
         nombre: formData.nombre,
         precio: formData.precio,
         descripcion: formData.descripcion,
         disponible: formData.disponible
       };
 
+      // Si estamos editando Y la categoría cambió, incluir categoria_id nuevo
+      if (item && selectedCategoryId !== categoryId) {
+        payload.categoria_id = selectedCategoryId;
+      }
+
+      // Si estamos creando, incluir categoria_id
+      if (!item) {
+        payload.categoria_id = selectedCategoryId;
+      }
+
       console.log('🔍 DEBUG: Enviando payload para crear/editar item:', payload);
       console.log('🔍 DEBUG: URL:', url);
       console.log('🔍 DEBUG: Method:', method);
+      console.log('🔍 DEBUG: Categoría original:', categoryId);
+      console.log('🔍 DEBUG: Categoría seleccionada:', selectedCategoryId);
       
       const response = await fetch(url, {
         method,
@@ -130,9 +146,11 @@ export function EditItemModal({
       } else {
         const errorText = await response.text();
         console.error('❌ Error guardando item. Status:', response.status, 'Response:', errorText);
+        alert(`Error al guardar: ${errorText}`);
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('Error de conexión al guardar el item');
     } finally {
       setIsSubmitting(false);
     }
@@ -170,14 +188,14 @@ export function EditItemModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <CardHeader>
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+        <CardHeader className="bg-white">
           <h3 className="text-lg font-semibold">
             {item ? 'Editar Item' : 'Agregar Nuevo Item'}
           </h3>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Selector de categoría */}
             <div>

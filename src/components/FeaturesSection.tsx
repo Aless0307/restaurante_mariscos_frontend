@@ -1,5 +1,5 @@
 import { Card, CardContent } from "./ui/card";
-import { Clock, Heart, MapPin, Phone } from "lucide-react";
+import { Clock, Heart, MapPin, Phone, Award, Users } from "lucide-react";
 import { GRADIENT_CLASSES } from "../styles/gradients";
 
 const features = [
@@ -26,6 +26,18 @@ const features = [
     title: "Especialidades Únicas",
     description: "Platillos exclusivos como 'Camarones a la Darío' y 'Pulpos a la Darío'",
     highlight: "Recetas Únicas"
+  },
+  {
+    icon: <Award className="w-8 h-8 text-yellow-500" />,
+    title: "Calidad Garantizada",
+    description: "Mariscos frescos seleccionados diariamente de los mejores proveedores",
+    highlight: "100% Fresco"
+  },
+  {
+    icon: <Users className="w-8 h-8 text-blue-500" />,
+    title: "Ambiente Familiar",
+    description: "Espacio amplio y acogedor perfecto para reuniones familiares",
+    highlight: "150 Personas"
   }
 ];
 

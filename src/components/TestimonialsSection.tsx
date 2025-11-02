@@ -1,30 +1,42 @@
 import { Card, CardContent } from "./ui/card";
 import { Star } from "lucide-react";
 
-const testimonials = [
+interface Testimonial {
+  name: string;
+  rating: number;
+  comment: string;
+  date: string;
+  verified?: string;
+}
+
+const testimonials: Testimonial[] = [
   {
-    name: "María González",
+    name: "Isolde Cancino",
     rating: 5,
-    comment: "Los mejores mariscos de Veracruz! El ceviche está increíble y la atención es excelente. Definitivamente regresaré.",
-    date: "Hace 2 semanas"
+    comment: "¡Altamente recomendable! El Restaurante Dario es de mis lugares favoritos. Siempre que voy, la comida está deliciosa, el servicio es excelente y el ambiente muy agradable. Los mariscos son frescos, bien servidos y con muchísimo sabor.",
+    date: "Hace 5 meses",
+    verified: "Local Guide · 311 opiniones"
   },
   {
-    name: "Carlos Hernández",
+    name: "ElAbuelo Mx",
     rating: 5,
-    comment: "Tradición familiar que se nota en cada platillo. Los camarones a la Dario son una delicia, totalmente recomendado.",
-    date: "Hace 1 mes"
+    comment: "Me ha encantado la comida. Probé Camarones Enchilpayados y me encantaron, he probado en muchos lugares de la ciudad antes de conocer aquí y no me equivoco en afirmar que son los mejores. La salsa muy rica, consistente y con un picor extraordinario de verdadero enchilpayado.",
+    date: "Hace un año",
+    verified: "Local Guide · 284 opiniones"
   },
   {
-    name: "Ana Martínez",
+    name: "Kamir R M",
     rating: 5,
-    comment: "Excelente servicio y comida fresca. El arroz a la tumbada es espectacular. Precio muy justo para la calidad.",
-    date: "Hace 3 semanas"
+    comment: "Lo mejor de la región en cuanto a mariscos, área especial climatizada, juegos para niños, estacionamiento amplio, el servicio súper rápido, atención de primera. INFINITAMENTE RECOMENDADO.",
+    date: "Hace un año",
+    verified: "Google Reviews"
   },
   {
-    name: "Roberto Vásquez",
+    name: "Mónica Lugo Álvarez",
     rating: 5,
-    comment: "Más de 50 años sirviendo los mejores mariscos. La sopa de mariscos es una experiencia única. ¡Gracias Dario!",
-    date: "Hace 1 semana"
+    comment: "Excelente Restaurant, todos sus platillos preparados al momento y con un sabor excepcional! El tamal de barbacoa una delicia, consomé de camarón y ensalada de caracol fileteado y camarón super rico!!! Excelente atención y precios!!! 💯👏🏼👌🏼",
+    date: "Hace 3 años",
+    verified: "Local Guide · 55 opiniones"
   }
 ];
 
@@ -44,26 +56,54 @@ export function TestimonialsSection() {
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="p-6 hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-gray-50">
-              <CardContent className="p-0">
+            <Card 
+              key={index} 
+              className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-white"
+            >
+              {/* Decorative accent */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-orange-400 to-green-500"></div>
+              
+              <CardContent className="p-6">
+                {/* Quote icon */}
+                <div className="mb-4">
+                  <svg className="w-10 h-10 text-orange-200 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                </div>
+
                 {/* Stars */}
-                <div className="flex mb-3">
+                <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400 drop-shadow-sm" />
                   ))}
                 </div>
                 
                 {/* Comment */}
-                <p className="text-gray-700 mb-4 text-sm leading-relaxed">
+                <p className="text-gray-700 mb-6 text-sm leading-relaxed italic">
                   "{testimonial.comment}"
                 </p>
                 
                 {/* Author */}
-                <div className="border-t pt-3">
-                  <p className="font-semibold text-gray-800">{testimonial.name}</p>
-                  <p className="text-xs text-gray-500">{testimonial.date}</p>
+                <div className="border-t border-gray-100 pt-4 mt-auto">
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="w-12 h-12 aspect-square rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-gray-800 text-sm leading-tight">{testimonial.name}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{testimonial.date}</p>
+                    </div>
+                  </div>
+                  {testimonial.verified && (
+                    <div className="flex items-center gap-1 mt-3 ml-1">
+                      <svg className="w-4 h-4 text-green-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <p className="text-xs text-green-600 font-medium">{testimonial.verified}</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -72,7 +112,7 @@ export function TestimonialsSection() {
 
         {/* Call to Action */}
         <div className="text-center mt-12">
-          <div className="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl p-8 max-w-2xl mx-auto text-white">
+          <div className="bg-green-600 rounded-2xl p-8 max-w-2xl mx-auto text-white">
             <h3 className="text-2xl font-bold mb-3">¡Únete a nuestra familia!</h3>
             <p className="mb-6">Comparte tu experiencia en Dario Restaurante</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

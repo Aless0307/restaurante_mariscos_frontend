@@ -5,6 +5,8 @@ export interface RestauranteInfo {
   nombre: string;
   descripcion_corta: string;
   descripcion_larga: string;
+  slogan: string;
+  slogan_subtitulo: string;
   
   // Contacto
   telefono: string;

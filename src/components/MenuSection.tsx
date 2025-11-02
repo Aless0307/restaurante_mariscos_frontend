@@ -9,6 +9,7 @@ export function MenuSection() {
   const [menuData, setMenuData] = useState<CategoriaMenu[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const cargarMenu = async () => {
@@ -136,8 +137,8 @@ export function MenuSection() {
           {/* Título Principal */}
           <div className="relative mb-6">
             <h2 className="text-5xl md:text-7xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Nuestro</span>
-              <span className="bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent ml-4">Menú</span>
+              <span className="bg-gradient-to-r from-green-600 to-white bg-clip-text text-transparent">Nuestro </span>
+              <span className="bg-gradient-to-r from-white to-orange-500 bg-clip-text text-transparent">Menú</span>
             </h2>
             {/* Línea decorativa */}
             <div className="flex items-center justify-center mt-4">
@@ -160,31 +161,41 @@ export function MenuSection() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {menuData.map((category, categoryIndex) => (
-              <Card key={categoryIndex} className="overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 max-w-md mx-auto w-full">
-                {/* Category Header with Image */}
-                <div className="relative h-32">
-                  <ImageWithFallback
+              <Card key={categoryIndex} className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 w-full max-w-sm mx-auto flex flex-col" style={{height: '600px'}}>
+                {/* Category Image - TAMAÑO FIJO ABSOLUTO */}
+                <div 
+                  className="relative w-full overflow-hidden flex-shrink-0 cursor-pointer group bg-gray-100"
+                  style={{height: '240px', minHeight: '240px', maxHeight: '240px'}}
+                  onClick={() => setSelectedImage(category.imagen_url_original || '')}
+                >
+                  <img
                     src={category.imagen_url_original || 'https://images.unsplash.com/photo-1750271328082-22490577fbb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBwbGF0dGVyfGVufDF8fHx8MTc1ODIwMjU4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'}
                     alt={`${category.nombre} - Restaurante Dario`}
-                    className="w-full h-full object-cover"
+                    style={{width: '100%', height: '240px', objectFit: 'cover', objectPosition: 'center'}}
+                    className="transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/50"></div>
-                  <div className={`absolute inset-0 bg-opacity-80`} style={{backgroundColor: category.color}}></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="text-3xl mb-2">{category.icono}</div>
-                      <h3 className="font-bold text-lg tracking-wider drop-shadow-lg">
-                        {category.nombre}
-                      </h3>
-                    </div>
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
+                </div>
+                
+                {/* Category Header */}
+                <div className="px-6 py-2 border-b-4 flex-shrink-0" style={{borderColor: category.color}}>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-3xl">{category.icono}</div>
+                    <h3 className="font-bold text-2xl text-gray-800">
+                      {category.nombre}
+                    </h3>
                   </div>
                 </div>
                 
                 {/* Menu Items */}
-                <CardContent className="p-6">
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                <CardContent className="px-6 pt-3 flex-1" style={{paddingBottom: '32px'}}>
+                  <div className="space-y-2 overflow-y-auto custom-scrollbar" style={{maxHeight: 'calc(600px - 240px - 104px)'}}>
                     {category.items.map((item, itemIndex) => (
-                      <div key={itemIndex} className="flex justify-between items-start py-1">
+                      <div 
+                        key={itemIndex} 
+                        className="flex justify-between items-start py-1"
+                        style={itemIndex === category.items.length - 1 ? {marginBottom: '24px'} : {}}
+                      >
                         <div className="flex-1 pr-3">
                           <span className={`${
                             item.nombre.startsWith('•') 
@@ -206,6 +217,8 @@ export function MenuSection() {
                         )}
                       </div>
                     ))}
+                    {/* Espaciador al final */}
+                    <div style={{height: '1px'}}></div>
                   </div>
                 </CardContent>
               </Card>
@@ -264,34 +277,50 @@ export function MenuSection() {
             </CardContent>
           </Card>
         </div>
+      </div>
 
-        {/* Menu Features */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-green-500 text-2xl">🦐</span>
-            </div>
-            <h4 className="font-bold text-gray-800 mb-2">Mariscos Frescos</h4>
-            <p className="text-gray-600 text-sm">Productos del mar seleccionados diariamente</p>
-          </div>
-          
-          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-orange-500 text-2xl">👨‍🍳</span>
-            </div>
-            <h4 className="font-bold text-gray-800 mb-2">Preparación Tradicional</h4>
-            <p className="text-gray-600 text-sm">Recetas familiares desde 1969</p>
-          </div>
-          
-          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-green-500 text-2xl">⚡</span>
-            </div>
-            <h4 className="font-bold text-gray-800 mb-2">Servicio Rápido</h4>
-            <p className="text-gray-600 text-sm">Ordena por WhatsApp y recoge en 30 minutos</p>
+      {/* Modal para ver imagen completa - TAMAÑO CONTROLADO */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setSelectedImage(null)}
+        >
+          {/* Contenedor de imagen con tamaño MÁXIMO controlado */}
+          <div className="relative flex items-center justify-center" style={{maxWidth: '800px', maxHeight: '600px', width: '90vw', height: '80vh'}}>
+            {/* Botón de cerrar en esquina superior DERECHA DE LA IMAGEN */}
+            <button 
+              className="absolute text-white z-[60] bg-red-600 hover:bg-red-700 rounded-full w-14 h-14 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-2xl border-4 border-white"
+              style={{
+                top: '-1rem',
+                right: '-1rem'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage(null);
+              }}
+              aria-label="Cerrar imagen"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <img 
+              src={selectedImage}
+              alt="Vista completa"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain'
+              }}
+              className="rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

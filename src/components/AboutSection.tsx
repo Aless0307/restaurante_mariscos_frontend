@@ -44,7 +44,7 @@ export function AboutSection() {
     {
       icon: <Heart className="w-8 h-8 text-orange-500" />,
       title: "Tradición Familiar",
-      description: `Más de ${restauranteInfo.anos_experiencia} años sirviendo los mejores mariscos`
+      description: "Más de 50 años sirviendo los mejores mariscos"
     }
   ];
 
@@ -59,20 +59,42 @@ export function AboutSection() {
               <span className="text-orange-500 ml-2">Nosotros</span>
             </h2>
             
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              {restauranteInfo.descripcion_larga}
-            </p>
+            <div className="space-y-6">
+              {/* Historia del restaurante */}
+              <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-gray-900 leading-relaxed text-justify font-medium">
+                    {restauranteInfo.descripcion_larga}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Slogan editable desde admin */}
+              <div className="bg-gradient-to-r from-green-50 to-orange-50 border-l-4 border-green-500 p-6 rounded-r-lg shadow-md">
+                <p className="text-xl md:text-2xl font-bold text-gray-800 italic leading-relaxed">
+                  "{restauranteInfo.slogan || 'Donde cada plato cuenta una historia del mar'}"
+                </p>
+                <p className="text-sm text-gray-600 mt-3 font-medium">
+                  — {restauranteInfo.slogan_subtitulo || 'Restaurante Dario, tradición veracruzana desde 1969'}
+                </p>
+              </div>
+            </div>
 
             {/* Features Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
               {features.map((feature, index) => (
-                <Card key={index} className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-start space-x-3">
-                      {feature.icon}
-                      <div>
-                        <h4 className="font-semibold text-gray-800 mb-1">{feature.title}</h4>
-                        <p className="text-sm text-gray-600">{feature.description}</p>
+                <Card 
+                  key={index} 
+                  className="border-l-4 border-l-green-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-white to-gray-50"
+                >
+                  <CardContent className="p-5">
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-gradient-to-br from-green-50 to-orange-50 p-3 rounded-xl shadow-sm">
+                        {feature.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-800 mb-2 text-base">{feature.title}</h4>
+                        <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
                       </div>
                     </div>
                   </CardContent>
