@@ -7,8 +7,8 @@ interface LoginAdminProps {
 }
 
 export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
-  const [email, setEmail] = useState('admin@restaurante.com');
-  const [password, setPassword] = useState('admin123');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +23,7 @@ export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (response.ok) {
@@ -52,18 +52,20 @@ export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
         </CardHeader>
         
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                Usuario o Email
               </label>
               <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 required
+                autoComplete="off"
+                name="username_admin_login"
               />
             </div>
             
@@ -78,6 +80,8 @@ export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 required
+                autoComplete="new-password"
+                name="password_admin_login"
               />
             </div>
 
@@ -115,14 +119,6 @@ export function LoginAdmin({ onLogin, onCancel }: LoginAdminProps) {
               </button>
             </div>
           </form>
-
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-700">
-              <span className="font-semibold">Credenciales de prueba:</span><br />
-              Email: admin@restaurante.com<br />
-              Contraseña: admin123
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>

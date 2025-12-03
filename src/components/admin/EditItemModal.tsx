@@ -21,6 +21,7 @@ interface EditItemModalProps {
   onClose: () => void;
   item: Item | null;
   categoryId: string;
+  itemIndex?: number;
   categorias: Categoria[];
   onItemChange: () => void;
 }
@@ -30,6 +31,7 @@ export function EditItemModal({
   onClose, 
   item, 
   categoryId, 
+  itemIndex,
   categorias, 
   onItemChange 
 }: EditItemModalProps) {
@@ -100,9 +102,14 @@ export function EditItemModal({
       // Para CREATE: usar selectedCategoryId en la URL
       const urlCategoryId = item ? categoryId : selectedCategoryId;
       
-      const url = item 
-        ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${urlCategoryId}/items/${item.nombre}`
+      let url = item 
+        ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${urlCategoryId}/items/${encodeURIComponent(item.nombre)}`
         : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${selectedCategoryId}/items`;
+      
+      // Agregar item_index si estamos editando
+      if (item && itemIndex !== undefined) {
+        url += `?item_index=${itemIndex}`;
+      }
       
       const method = item ? 'PUT' : 'POST';
       
@@ -163,7 +170,7 @@ export function EditItemModal({
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${selectedCategoryId}/items/${item.nombre}`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${selectedCategoryId}/items/${encodeURIComponent(item.nombre)}?item_index=${itemIndex}`,
         {
           method: 'DELETE',
           headers: {

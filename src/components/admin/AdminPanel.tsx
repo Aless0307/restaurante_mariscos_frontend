@@ -27,8 +27,26 @@ import {
   User,
   Bell,
   RefreshCw,
-  Activity
+  Activity,
+  GripVertical
 } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface AdminPanelProps {
   token: string;
@@ -185,6 +203,156 @@ const AdminTheme = {
      - Texto claro (100-300) sobre fondos oscuros (700-900)
      - Texto oscuro (700-900) sobre fondos claros (50-200)
 */
+
+// Componente para item arrastrable
+interface SortableItemProps {
+  id: string;
+  item: Item;
+  categoryId: string;
+  itemIndex: number;
+  onEdit: (item: Item, categoryId: string) => void;
+  onDelete: (categoryId: string, itemNombre: string, itemIndex: number) => void;
+}
+
+function SortableItem({ id, item, categoryId, itemIndex, onEdit, onDelete }: SortableItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ 
+    id,
+    transition: {
+      duration: 200, // Duración más corta para respuesta más rápida
+      easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)', // Easing más suave
+    },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition || 'transform 200ms cubic-bezier(0.25, 0.1, 0.25, 1)',
+    opacity: isDragging ? 0.4 : 1, // Más transparente para mejor feedback
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(254, 243, 199, 0.3))',
+    borderColor: AdminTheme.primary.orange[200],
+    cursor: isDragging ? 'grabbing' : 'default',
+    zIndex: isDragging ? 999 : 'auto',
+    scale: isDragging ? '1.02' : '1', // Ligeramente más grande al arrastrar
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      className="group rounded-2xl p-4 transition-all duration-300 border-2 hover:shadow-lg"
+      onMouseEnter={(e) => {
+        if (!isDragging) {
+          e.currentTarget.style.borderColor = AdminTheme.primary.orange[400];
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isDragging) {
+          e.currentTarget.style.borderColor = AdminTheme.primary.orange[200];
+        }
+      }}
+    >
+      <div className="flex justify-between items-start">
+        {/* Handle para arrastrar - Mejorado para mejor UX */}
+        <div 
+          {...attributes} 
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing mr-3 mt-1 p-2 -ml-2 hover:bg-orange-100 rounded-lg transition-all duration-150"
+          style={{ touchAction: 'none', userSelect: 'none' }}
+          title="Arrastra para reordenar"
+        >
+          <GripVertical 
+            className="w-5 h-5 transition-opacity duration-150" 
+            style={{ 
+              color: AdminTheme.primary.orange[600],
+              opacity: isDragging ? 1 : 0.6
+            }} 
+          />
+        </div>
+        
+        <div className="flex-1 min-w-0 mr-4">
+          <h5 className="font-bold truncate text-lg" style={{ color: AdminTheme.primary.orange[700] }}>
+            {item.nombre}
+          </h5>
+          {item.descripcion && (
+            <p className="text-sm mt-1 line-clamp-2" style={{ color: AdminTheme.primary.orange[600] }}>
+              {item.descripcion}
+            </p>
+          )}
+          <div className="mt-2 flex items-center space-x-2">
+            <span className="text-2xl font-black" style={{ color: AdminTheme.primary.green[600] }}>
+              ${item.precio}
+            </span>
+            <div className={`px-3 py-1 rounded-lg text-xs font-bold border-2 ${
+              item.disponible 
+                ? 'bg-green-100 text-green-700 border-green-300' 
+                : 'bg-red-100 text-red-700 border-red-300'
+            }`}>
+              {item.disponible ? '✓ Disponible' : '✗ No disponible'}
+            </div>
+          </div>
+        </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onEdit(item, categoryId);
+            }}
+            className="w-9 h-9 rounded-xl transition-all duration-200 flex items-center justify-center border-2 shadow-sm"
+            style={{
+              backgroundColor: AdminTheme.primary.green[100],
+              borderColor: AdminTheme.primary.green[300],
+              color: AdminTheme.primary.green[700]
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = AdminTheme.primary.green[200];
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = AdminTheme.primary.green[100];
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+            title="Editar platillo"
+          >
+            <Edit3 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (window.confirm(`¿Eliminar "${item.nombre}"?`)) {
+                onDelete(categoryId, item.nombre, itemIndex);
+              }
+            }}
+            className="w-9 h-9 rounded-xl transition-all duration-200 flex items-center justify-center border-2 shadow-sm"
+            style={{
+              backgroundColor: '#fee2e2',
+              borderColor: '#fca5a5',
+              color: AdminTheme.primary.red[600]
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#fecaca';
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#fee2e2';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+            title="Eliminar platillo"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function AdminPanel({ token, onLogout }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -439,6 +607,42 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
       console.error('Error:', error);
     }
   };
+
+  const actualizarOrdenItems = async (categoriaId: string, items: Item[]) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/admin/categorias/${categoriaId}/reordenar-items`, {
+        method: 'PUT',
+        headers: apiHeaders,
+        body: JSON.stringify({ items: items.map(item => item.nombre) }),
+      });
+
+      if (response.status === 401) {
+        console.log('🔴 Token expirado en actualizarOrdenItems');
+        onLogout();
+        return;
+      }
+
+      if (response.ok) {
+        console.log('✅ Orden de items actualizado exitosamente');
+        await cargarCategorias();
+      } else {
+        console.error('❌ Error al actualizar orden de items:', response.status);
+      }
+    } catch (error) {
+      console.error('Error actualizando orden:', error);
+    }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Reducido de 10 a 8 píxeles para activación más rápida
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const tabs = [
     { 
@@ -1004,104 +1208,68 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 </div>
                 
                 <CardContent className="p-6">
-                  {/* Lista de platillos moderna */}
+                  {/* Lista de platillos moderna con drag & drop */}
                   <div className="max-h-72 overflow-y-auto mb-6 custom-scrollbar">
                     {categoria.items && categoria.items.length > 0 ? (
-                      <div className="space-y-3">
-                        {categoria.items.map((item, index) => (
-                          <div 
-                            key={`${categoria.id}-${index}`} 
-                            className="group rounded-2xl p-4 transition-all duration-300 border-2 hover:shadow-lg"
-                            style={{
-                              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(254, 243, 199, 0.3))',
-                              borderColor: AdminTheme.primary.orange[200]
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = AdminTheme.primary.orange[400];
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = AdminTheme.primary.orange[200];
-                            }}
-                          >
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1 min-w-0 mr-4">
-                                <h5 className="font-bold truncate text-lg" style={{ color: AdminTheme.primary.orange[700] }}>
-                                  {item.nombre}
-                                </h5>
-                                {item.descripcion && (
-                                  <p className="text-sm mt-1 line-clamp-2" style={{ color: AdminTheme.primary.orange[600] }}>
-                                    {item.descripcion}
-                                  </p>
-                                )}
-                                <div className="mt-2 flex items-center space-x-2">
-                                  <span className="text-2xl font-black" style={{ color: AdminTheme.primary.green[600] }}>
-                                    ${item.precio}
-                                  </span>
-                                  <div className={`px-3 py-1 rounded-lg text-xs font-bold border-2 ${
-                                    item.disponible 
-                                      ? 'bg-green-100 text-green-700 border-green-300' 
-                                      : 'bg-red-100 text-red-700 border-red-300'
-                                  }`}>
-                                    {item.disponible ? '✓ Disponible' : '✗ No disponible'}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    openEditItem(item, categoria.id || categoria._id);
-                                  }}
-                                  className="w-9 h-9 rounded-xl transition-all duration-200 flex items-center justify-center border-2 shadow-sm"
-                                  style={{
-                                    backgroundColor: AdminTheme.primary.green[100],
-                                    borderColor: AdminTheme.primary.green[300],
-                                    color: AdminTheme.primary.green[700]
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = AdminTheme.primary.green[200];
-                                    e.currentTarget.style.transform = 'scale(1.1)';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = AdminTheme.primary.green[100];
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                  }}
-                                  title="Editar platillo"
-                                >
-                                  <Edit3 className="w-4 h-4" />
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (window.confirm(`¿Eliminar "${item.nombre}"?`)) {
-                                      eliminarItem(categoria.id || categoria._id, item.nombre, index);
-                                    }
-                                  }}
-                                  className="w-9 h-9 rounded-xl transition-all duration-200 flex items-center justify-center border-2 shadow-sm"
-                                  style={{
-                                    backgroundColor: '#fee2e2',
-                                    borderColor: '#fca5a5',
-                                    color: AdminTheme.primary.red[600]
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#fecaca';
-                                    e.currentTarget.style.transform = 'scale(1.1)';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#fee2e2';
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                  }}
-                                  title="Eliminar platillo"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </div>
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={(event: DragEndEvent) => {
+                          const { active, over } = event;
+
+                          if (over && active.id !== over.id) {
+                            const oldIndex = categoria.items?.findIndex(
+                              item => `${categoria.id}-${item.nombre}` === active.id
+                            ) || 0;
+                            const newIndex = categoria.items?.findIndex(
+                              item => `${categoria.id}-${item.nombre}` === over.id
+                            ) || 0;
+
+                            if (categoria.items) {
+                              const newItems = arrayMove(categoria.items, oldIndex, newIndex);
+                              
+                              // Actualizar el estado local inmediatamente para feedback visual
+                              setCategorias(prevCategorias => 
+                                prevCategorias.map(cat => 
+                                  cat.id === categoria.id 
+                                    ? { ...cat, items: newItems }
+                                    : cat
+                                )
+                              );
+
+                              // Actualizar en el servidor
+                              actualizarOrdenItems(categoria.id || categoria._id, newItems);
+                            }
+                          }
+                        }}
+                        autoScroll={{
+                          enabled: true,
+                          threshold: {
+                            x: 0.2,
+                            y: 0.2,
+                          },
+                          acceleration: 10,
+                        }}
+                      >
+                        <SortableContext
+                          items={categoria.items.map(item => `${categoria.id}-${item.nombre}`)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="space-y-3">
+                            {categoria.items.map((item, index) => (
+                              <SortableItem
+                                key={`${categoria.id}-${item.nombre}`}
+                                id={`${categoria.id}-${item.nombre}`}
+                                item={item}
+                                categoryId={categoria.id || categoria._id}
+                                itemIndex={index}
+                                onEdit={openEditItem}
+                                onDelete={eliminarItem}
+                              />
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </SortableContext>
+                      </DndContext>
                     ) : (
                       <div className="text-center py-12">
                         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" 
@@ -1632,6 +1800,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
         <EditItemModal
           item={editingItem?.item || null}
           categoryId={editingItem?.categoryId || selectedCategoryForItems || ''}
+          itemIndex={editingItem?.itemIndex}
           categorias={categorias}
           isOpen={showItemModal}
           onClose={() => {

@@ -164,15 +164,27 @@ export function MenuSection() {
               <Card key={categoryIndex} className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 w-full max-w-sm mx-auto flex flex-col" style={{height: '600px'}}>
                 {/* Category Image - TAMAÑO FIJO ABSOLUTO */}
                 <div 
-                  className="relative w-full overflow-hidden flex-shrink-0 cursor-pointer group bg-gray-100"
+                  className="relative w-full overflow-hidden flex-shrink-0 cursor-pointer group bg-gray-200"
                   style={{height: '240px', minHeight: '240px', maxHeight: '240px'}}
                   onClick={() => setSelectedImage(category.imagen_url_original || '')}
                 >
+                  {/* Fondo borroso para efecto estético */}
+                  <div 
+                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-110"
+                    style={{
+                      backgroundImage: `url(${category.imagen_url_original || 'https://images.unsplash.com/photo-1750271328082-22490577fbb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBwbGF0dGVyfGVufDF8fHx8MTc1ODIwMjU4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      filter: 'blur(15px) brightness(0.6)',
+                      transform: 'scale(1.2)'
+                    }}
+                  />
+                  
+                  {/* Imagen principal */}
                   <img
                     src={category.imagen_url_original || 'https://images.unsplash.com/photo-1750271328082-22490577fbb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBwbGF0dGVyfGVufDF8fHx8MTc1ODIwMjU4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'}
                     alt={`${category.nombre} - Restaurante Dario`}
-                    style={{width: '100%', height: '240px', objectFit: 'cover', objectPosition: 'center'}}
-                    className="transition-transform duration-300 group-hover:scale-105"
+                    className="relative w-full h-full object-contain z-10 transition-transform duration-300 group-hover:scale-105 drop-shadow-xl"
                   />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
                 </div>
