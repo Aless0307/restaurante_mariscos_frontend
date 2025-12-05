@@ -15,8 +15,8 @@ interface RestauranteInfo {
 
 export function AboutSection() {
   const [restauranteInfo, setRestauranteInfo] = useState<RestauranteInfo>({
-    nombre: "Dario Restaurante",
-    descripcion_larga: "En Dario Restaurante, llevamos más de dos décadas dedicados a ofrecer la mejor experiencia gastronómica de mariscos.",
+    nombre: "Restaurante Dario",
+    descripcion_larga: "Restaurante Dario, llevamos más de dos décadas dedicados a ofrecer la mejor experiencia gastronómica de mariscos.",
     imagen_sobre_nosotros_url: "https://images.unsplash.com/photo-1667388968964-4aa652df0a9b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwaW50ZXJpb3IlMjBkaW5pbmd8ZW58MXx8fHwxNzU3MzcyODA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
     anos_experiencia: 20,
     clientes_satisfechos: 10000,

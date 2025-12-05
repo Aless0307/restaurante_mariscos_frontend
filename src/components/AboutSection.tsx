@@ -63,7 +63,7 @@ export function AboutSection() {
               {/* Historia del restaurante */}
               <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border border-gray-200 shadow-sm">
                 <div className="prose prose-lg max-w-none">
-                  <p className="text-gray-900 leading-relaxed text-justify font-medium">
+                  <p className="text-gray-900 leading-relaxed !text-justify font-medium hyphens-auto w-full block" style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
                     {restauranteInfo.descripcion_larga}
                   </p>
                 </div>

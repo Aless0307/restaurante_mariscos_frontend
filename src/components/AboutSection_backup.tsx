@@ -16,7 +16,7 @@ interface RestauranteInfo {
 export function AboutSection() {
   const [restauranteInfo, setRestauranteInfo] = useState<RestauranteInfo>({
     nombre: "Dario Restaurante",
-    descripcion_larga: "En Dario Restaurante, llevamos más de dos décadas dedicados a ofrecer la mejor experiencia gastronómica de mariscos.",
+    descripcion_larga: "En Restaurante Dario, llevamos más de dos décadas dedicados a ofrecer la mejor experiencia gastronómica de mariscos.",
     imagen_sobre_nosotros_url: "https://images.unsplash.com/photo-1667388968964-4aa652df0a9b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwaW50ZXJpb3IlMjBkaW5pbmd8ZW58MXx8fHwxNzU3MzcyODA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
     anos_experiencia: 20,
     clientes_satisfechos: 10000,
@@ -39,7 +39,7 @@ export function AboutSection() {
       if (response.ok) {
         const data = await response.json();
         setRestauranteInfo({
-          nombre: data.nombre || "Dario Restaurante",
+          nombre: data.nombre || "Restaurante Dario",
           descripcion_completa: data.descripcion_completa || "Desde hace más de 20 años...",
           imagen_sobre_nosotros_url: data.imagen_sobre_nosotros_url || "https://images.unsplash.com/photo-1730698306944-544a5cb282e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBwbGF0dGVyJTIwc2hyaW1wJTIwbG9ic3RlcnxlbnwxfHx8fDE3NTgwNTg0NDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
           clientes_satisfechos: data.clientes_satisfechos || 1500,

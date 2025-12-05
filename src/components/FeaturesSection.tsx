@@ -6,8 +6,8 @@ const features = [
   {
     icon: <Clock className="w-8 h-8 text-green-500" />,
     title: "Horarios Extendidos",
-    description: "Abierto todos los días de 9:00 AM a 6:00 PM para tu comodidad",
-    highlight: "9 AM - 6 PM"
+    description: "Abierto todos los días de 9:30 AM a 7:00 PM para tu comodidad",
+    highlight: "9:30 AM - 7:00 PM"
   },
   {
     icon: <Heart className="w-8 h-8 text-red-500" />,
@@ -37,7 +37,7 @@ const features = [
     icon: <Users className="w-8 h-8 text-blue-500" />,
     title: "Ambiente Familiar",
     description: "Espacio amplio y acogedor perfecto para reuniones familiares",
-    highlight: "150 Personas"
+    highlight: "230 Personas"
   }
 ];
 

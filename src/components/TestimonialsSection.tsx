@@ -114,7 +114,7 @@ export function TestimonialsSection() {
         <div className="text-center mt-12">
           <div className="bg-green-600 rounded-2xl p-8 max-w-2xl mx-auto text-white">
             <h3 className="text-2xl font-bold mb-3">¡Únete a nuestra familia!</h3>
-            <p className="mb-6">Comparte tu experiencia en Dario Restaurante</p>
+            <p className="mb-6">Comparte tu experiencia en Restaurante Dario</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => window.open('https://www.google.com/search?q=Restaurante+Dario+Veracruz&sca_esv=6e39c7eb808723cd&sxsrf=AE3TifNBMzZl3ttGRO_ueyiDGSEZj_3jog%3A1761519063304&ei=16X-aI-xEuijkPIPqtrb6Aw&ved=0ahUKEwjP-KHw-cKQAxXoEUQIHSrtFs0Q4dUDCBE&uact=5&oq=Restaurante+Dario+Veracruz&gs_lp=Egxnd3Mtd2l6LXNlcnAiGlJlc3RhdXJhbnRlIERhcmlvIFZlcmFjcnV6MgQQIxgnMgUQABiABDIGEAAYFhgeMgYQABgWGB4yCBAAGIAEGKIEMggQABiABBiiBEi1BVDXA1jXA3ABeAGQAQCYAYgBoAGIAaoBAzAuMbgBA8gBAPgBAZgCAqACpAHCAgoQABiwAxjWBBhHmAMAiAYBkAYIkgcDMS4xoAflBLIHAzAuMbgHlQHCBwMzLTLIBxU&sclient=gws-wiz-serp&lqi=ChpSZXN0YXVyYW50ZSBEYXJpbyBWZXJhY3J1ekiS__3Ox6uAgAhaMhAAEAEQAhgAGAEYAiIacmVzdGF1cmFudGUgZGFyaW8gdmVyYWNydXoqCAgCEAAQARACkgESc2VhZm9vZF9yZXN0YXVyYW50mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVVJWZERkbFRreFJFQUWqAUMQATIfEAEiG-JUnXDw7Z7K66rHj_1iUEJaGgBbNMHaRdjXATIeEAIiGnJlc3RhdXJhbnRlIGRhcmlvIHZlcmFjcnV6-gEFCKwBED4#rlimm=4436740723205357158&lrd=0x85c3418b05a3fc41:0x3d92782e4f2a3e66,3,,,,', '_blank')}

@@ -44,7 +44,7 @@
 
 ### Paso 1: Estado Inicial
 ```
-Categoría: CARNES
+Categoría: CARNESW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  1. ⋮⋮  Barbacoa de Res      $110
  2. ⋮⋮  Barbacoa Mexicana    $130

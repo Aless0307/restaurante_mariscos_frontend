@@ -200,37 +200,39 @@ export function MenuSection() {
                 </div>
                 
                 {/* Menu Items */}
-                <CardContent className="px-6 pt-3 flex-1" style={{paddingBottom: '32px'}}>
-                  <div className="space-y-2 overflow-y-auto custom-scrollbar" style={{maxHeight: 'calc(600px - 240px - 104px)'}}>
-                    {category.items.map((item, itemIndex) => (
-                      <div 
-                        key={itemIndex} 
-                        className="flex justify-between items-start py-1"
-                        style={itemIndex === category.items.length - 1 ? {marginBottom: '24px'} : {}}
-                      >
-                        <div className="flex-1 pr-3">
-                          <span className={`${
-                            item.nombre.startsWith('•') 
-                              ? 'ml-4 text-gray-600 text-sm' 
-                              : 'text-gray-800 font-medium'
-                          }`}>
-                            {item.nombre}
-                          </span>
-                          {item.descripcion && (
-                            <span className="text-xs text-gray-500 ml-2 italic">
-                              ({item.descripcion})
+                <CardContent className="p-0 pt-3 flex-1" style={{paddingBottom: '32px'}}>
+                  <div className="overflow-y-auto custom-scrollbar" style={{maxHeight: 'calc(600px - 240px - 104px)'}}>
+                    <div className="space-y-2 px-8">
+                      {category.items.map((item, itemIndex) => (
+                        <div 
+                          key={itemIndex} 
+                          className="flex justify-between items-start py-1"
+                          style={itemIndex === category.items.length - 1 ? {marginBottom: '24px'} : {}}
+                        >
+                          <div className="flex-1 pr-3">
+                            <span className={`${
+                              item.nombre.startsWith('•') 
+                                ? 'ml-4 text-gray-600 text-sm' 
+                                : 'text-gray-800 font-medium'
+                            }`}>
+                              {item.nombre}
+                            </span>
+                            {item.descripcion && (
+                              <span className="text-xs text-gray-500 ml-2 italic">
+                                ({item.descripcion})
+                              </span>
+                            )}
+                          </div>
+                          {item.precio > 0 && (
+                            <span className="font-bold text-green-600 whitespace-nowrap text-lg">
+                              ${item.precio}
                             </span>
                           )}
                         </div>
-                        {item.precio > 0 && (
-                          <span className="font-bold text-green-600 whitespace-nowrap text-lg">
-                            ${item.precio}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                    {/* Espaciador al final */}
-                    <div style={{height: '1px'}}></div>
+                      ))}
+                      {/* Espaciador al final */}
+                      <div style={{height: '1px'}}></div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -256,7 +258,7 @@ export function MenuSection() {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
                 <button 
-                  onClick={() => window.open('https://wa.me/522291096048?text=Hola, me gustaría hacer un pedido del menú de Darío Restaurante', '_blank')}
+                  onClick={() => window.open('https://wa.me/522291096048?text=Hola, me gustaría hacer un pedido', '_blank')}
                   className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-semibold inline-flex items-center justify-center space-x-2 transition-all duration-300 hover:shadow-lg hover:scale-105"
                 >
                   <span>💬</span>
@@ -275,7 +277,7 @@ export function MenuSection() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-green-500">⏰</span>
-                  <span>Listo en 30 minutos</span>
+                  <span>Alimentos frescos</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-orange-500">🚗</span>
@@ -283,7 +285,7 @@ export function MenuSection() {
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-blue-500">💳</span>
-                  <span>Pago en efectivo/transferencia</span>
+                  <span>Pago en efectivo/tarjeta</span>
                 </div>
               </div>
             </CardContent>
